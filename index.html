@@ -22,8 +22,8 @@
     --amber: #f5a524;
     --red: #f54f4f;
     --cyan: #3dcff5;
+    --nav-bg: rgba(13,15,20,0.95);
 
-    /* Tool colors */
     --outlook: #0078d4;
     --teams: #6264a7;
     --todo: #2564cf;
@@ -34,8 +34,47 @@
     --ai: #f5a524;
   }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* ─── LIGHT MODE ─── */
+  body.light {
+    --bg: #f4f5f8;
+    --surface: #ffffff;
+    --surface2: #eceef4;
+    --border: #dde0ea;
+    --border2: #c5cad8;
+    --text: #191c26;
+    --text2: #464d68;
+    --text3: #8e96ad;
+    --accent: #2b56e0;
+    --accent2: #5b2fe8;
+    --green: #1a9455;
+    --amber: #c97d08;
+    --red: #cc2f2f;
+    --nav-bg: rgba(244,245,248,0.96);
+  }
+  body.light .matrix-row:nth-child(odd) .matrix-cell { background: rgba(0,0,0,0.018); }
+  body.light .dest-todo   { background: rgba(43,86,224,0.07);  color: #2b56e0; border-color: rgba(43,86,224,0.2); }
+  body.light .dest-planner{ background: rgba(49,117,47,0.07);  color: #2a7228; border-color: rgba(49,117,47,0.2); }
+  body.light .dest-loop   { background: rgba(196,62,159,0.07); color: #a0257d; border-color: rgba(196,62,159,0.2); }
+  body.light .dest-lists  { background: rgba(33,115,70,0.07);  color: #1b6e43; border-color: rgba(33,115,70,0.2); }
+  body.light .dest-archive{ background: rgba(80,88,112,0.07);  color: var(--text3); border-color: var(--border); }
+  body.light .dest-ai     { background: rgba(201,125,8,0.07);  color: var(--amber); border-color: rgba(201,125,8,0.2); }
+  body.light .dest-sharepoint { background: rgba(3,131,135,0.07); color: #027477; border-color: rgba(3,131,135,0.2); }
+  body.light .info-box    { background: rgba(43,86,224,0.05); border-color: rgba(43,86,224,0.18); }
+  body.light .warn-box    { background: rgba(201,125,8,0.05); border-color: rgba(201,125,8,0.18); }
+  body.light .tag-meeting   { background: rgba(98,100,167,0.1);  color: #4b4e9e; border-color: rgba(98,100,167,0.25); }
+  body.light .tag-initiative{ background: rgba(196,62,159,0.08); color: #952071; border-color: rgba(196,62,159,0.2); }
+  body.light .tag-review    { background: rgba(26,148,85,0.08);  color: #1a9455; border-color: rgba(26,148,85,0.2); }
+  body.light .tag-pipeline  { background: rgba(43,86,224,0.07);  color: #2b56e0; border-color: rgba(43,86,224,0.2); }
+  body.light .tag-comms     { background: rgba(3,131,135,0.07);  color: #027477; border-color: rgba(3,131,135,0.2); }
+  body.light .tag-planning  { background: rgba(201,125,8,0.07);  color: #c97d08; border-color: rgba(201,125,8,0.2); }
+  body.light .prompt-body   { background: var(--surface2); }
+  body.light .pf-btn.active { color: #fff; }
+  body.light .copy-btn { background: var(--surface2); }
+  body.light .lc-stage::after { color: var(--text3); }
+  body.light .dt-diamond { background: var(--surface2); }
+  body.light .tool-card:hover { background: var(--surface2); }
 
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     background: var(--bg);
     color: var(--text);
@@ -43,21 +82,31 @@
     font-size: 13px;
     line-height: 1.6;
     min-height: 100vh;
+    transition: background 0.2s, color 0.2s;
   }
 
-  /* NAV */
+  /* ─── TOP NAV ─── */
   nav {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(13,15,20,0.92);
-    backdrop-filter: blur(12px);
+    background: var(--nav-bg);
+    backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--border);
-    padding: 0 32px;
+    padding: 0 24px;
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 0;
     height: 52px;
+    justify-content: space-between;
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+    min-width: 0;
   }
 
   .nav-title {
@@ -67,51 +116,125 @@
     color: var(--text);
     letter-spacing: 0.01em;
     white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .nav-links {
+  /* ─── MAIN TAB GROUP NAV ─── */
+  .nav-groups {
     display: flex;
-    gap: 4px;
+    gap: 2px;
     overflow-x: auto;
     scrollbar-width: none;
   }
-  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-groups::-webkit-scrollbar { display: none; }
 
-  .nav-link {
-    padding: 5px 12px;
-    border-radius: 4px;
+  .nav-group-btn {
+    padding: 6px 14px;
+    border-radius: 5px;
     color: var(--text3);
-    text-decoration: none;
+    font-family: 'DM Mono', monospace;
     font-size: 11px;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     transition: all 0.15s;
     white-space: nowrap;
     cursor: pointer;
-    border: none;
+    border: 1px solid transparent;
     background: none;
   }
-  .nav-link:hover, .nav-link.active {
-    background: var(--surface2);
+  .nav-group-btn:hover { background: var(--surface2); color: var(--text2); }
+  .nav-group-btn.active {
+    background: var(--surface);
     color: var(--text);
+    border-color: var(--border);
   }
 
-  /* SECTIONS */
+  /* ─── THEME TOGGLE ─── */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+  .theme-label {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .toggle-track {
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    background: var(--border2);
+    position: relative;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-track.light-on { background: var(--accent); }
+  .toggle-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.18s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .toggle-track.light-on .toggle-thumb { left: 20px; }
+  .theme-icon { font-size: 13px; line-height: 1; }
+
+  /* ─── SUB-TAB BAR ─── */
+  .subtab-bar {
+    display: none;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .subtab-bar::-webkit-scrollbar { display: none; }
+  .subtab-bar.visible { display: flex; }
+
+  .subtab-btn {
+    padding: 10px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    letter-spacing: 0.04em;
+    margin-bottom: -1px;
+  }
+  .subtab-btn:hover { color: var(--text2); }
+  .subtab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ─── SECTIONS ─── */
   .section {
     display: none;
     padding: 40px 32px 80px;
     max-width: 1200px;
     margin: 0 auto;
-    animation: fadeIn 0.2s ease;
+    animation: fadeIn 0.18s ease;
   }
   .section.active { display: block; }
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* HEADINGS */
+  /* ─── TYPOGRAPHY ─── */
   h1 {
     font-family: 'Fraunces', serif;
     font-weight: 900;
@@ -134,7 +257,6 @@
     color: var(--text3);
     margin: 24px 0 12px;
   }
-
   .subtitle {
     color: var(--text2);
     font-size: 14px;
@@ -144,583 +266,196 @@
     font-style: italic;
   }
 
-  /* SYSTEM MAP */
-  .system-map {
-    display: grid;
-    gap: 2px;
-  }
-
-  .layer {
-    display: grid;
-    grid-template-columns: 160px 1fr;
-    gap: 2px;
-  }
-
+  /* ─── SYSTEM MAP ─── */
+  .system-map { display: grid; gap: 2px; }
+  .layer { display: grid; grid-template-columns: 160px 1fr; gap: 2px; }
   .layer-label {
     background: var(--surface);
     border: 1px solid var(--border);
     padding: 20px 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    display: flex; flex-direction: column; justify-content: center;
     border-radius: 6px 0 0 6px;
   }
-
-  .layer-name {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--text3);
-    margin-bottom: 4px;
-  }
-
-  .layer-role {
-    font-size: 12px;
-    color: var(--text2);
-    font-family: 'Fraunces', serif;
-    font-weight: 300;
-  }
-
-  .layer-tools {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 2px;
-  }
-
+  .layer-name { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text3); margin-bottom: 4px; }
+  .layer-role { font-size: 12px; color: var(--text2); font-family: 'Fraunces', serif; font-weight: 300; }
+  .layer-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 2px; }
   .tool-card {
     background: var(--surface);
     border: 1px solid var(--border);
     padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: flex; flex-direction: column; gap: 6px;
     transition: all 0.15s;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
   .tool-card:last-child { border-radius: 0 6px 6px 0; }
   .tool-card:hover { border-color: var(--border2); background: var(--surface2); }
+  .tool-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .tool-card[data-tool="outlook"]::before   { background: var(--outlook); }
+  .tool-card[data-tool="teams"]::before     { background: var(--teams); }
+  .tool-card[data-tool="todo"]::before      { background: var(--todo); }
+  .tool-card[data-tool="planner"]::before   { background: var(--planner); }
+  .tool-card[data-tool="loop"]::before      { background: var(--loop); }
+  .tool-card[data-tool="lists"]::before     { background: var(--lists); }
+  .tool-card[data-tool="sharepoint"]::before{ background: var(--sharepoint); }
+  .tool-card[data-tool="ai"]::before        { background: var(--ai); }
+  .tool-name    { font-size: 12px; font-weight: 500; color: var(--text); }
+  .tool-purpose { font-size: 11px; color: var(--text2); line-height: 1.4; }
+  .tool-rule    { font-size: 10px; color: var(--text3); margin-top: 2px; font-style: italic; }
 
-  .tool-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-  }
+  /* ─── PRINCIPLES ─── */
+  .principles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 40px; }
+  .principle-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .principle-num  { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 8px; }
+  .principle-text { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; color: var(--text); line-height: 1.3; }
+  .principle-detail { margin-top: 8px; font-size: 11px; color: var(--text2); line-height: 1.5; }
 
-  .tool-card[data-tool="outlook"]::before { background: var(--outlook); }
-  .tool-card[data-tool="teams"]::before { background: var(--teams); }
-  .tool-card[data-tool="todo"]::before { background: var(--todo); }
-  .tool-card[data-tool="planner"]::before { background: var(--planner); }
-  .tool-card[data-tool="loop"]::before { background: var(--loop); }
-  .tool-card[data-tool="lists"]::before { background: var(--lists); }
-  .tool-card[data-tool="sharepoint"]::before { background: var(--sharepoint); }
-  .tool-card[data-tool="ai"]::before { background: var(--ai); }
-
-  .tool-name {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text);
-  }
-  .tool-purpose {
-    font-size: 11px;
-    color: var(--text2);
-    line-height: 1.4;
-  }
-  .tool-rule {
-    font-size: 10px;
-    color: var(--text3);
-    margin-top: 2px;
-    font-style: italic;
-  }
-
-  /* FLOW ARROWS */
-  .flow-connector {
-    height: 32px;
-    display: flex;
-    align-items: center;
-    padding-left: 80px;
-    gap: 8px;
-    color: var(--text3);
-    font-size: 11px;
-  }
-  .flow-connector::before {
-    content: '';
-    display: block;
-    width: 1px;
-    height: 100%;
-    background: linear-gradient(to bottom, var(--border), var(--accent), var(--border));
-    margin-left: 8px;
-    margin-right: 8px;
-  }
-
-  /* PRINCIPLES */
-  .principles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 12px;
-    margin-bottom: 40px;
-  }
-
-  .principle-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-  }
-
-  .principle-num {
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-  }
-
-  .principle-text {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--text);
-    line-height: 1.3;
-  }
-
-  .principle-detail {
-    margin-top: 8px;
-    font-size: 11px;
-    color: var(--text2);
-    line-height: 1.5;
-  }
-
-  /* DECISION TREES */
-  .decision-tree {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 28px;
-    margin-bottom: 20px;
-  }
-
-  .dt-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 16px;
-    color: var(--text);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .dt-start {
-    background: var(--surface2);
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    padding: 10px 16px;
-    font-size: 12px;
-    color: var(--accent);
-    display: inline-block;
-    margin-bottom: 16px;
-  }
-
-  .dt-node {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin: 8px 0;
-    padding-left: 20px;
-  }
-
+  /* ─── DECISION TREES ─── */
+  .decision-tree { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 20px; }
+  .dt-title { font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+  .dt-start { background: var(--surface2); border: 1px solid var(--accent); border-radius: 6px; padding: 10px 16px; font-size: 12px; color: var(--accent); display: inline-block; margin-bottom: 16px; }
+  .dt-node { display: flex; align-items: flex-start; gap: 12px; margin: 8px 0; padding-left: 20px; }
   .dt-node.indent-1 { padding-left: 40px; }
   .dt-node.indent-2 { padding-left: 60px; }
   .dt-node.indent-3 { padding-left: 80px; }
-
-  .dt-diamond {
-    width: 20px;
-    height: 20px;
-    background: var(--surface);
-    border: 1px solid var(--amber);
-    transform: rotate(45deg);
-    flex-shrink: 0;
-    margin-top: 4px;
-  }
-
-  .dt-arrow {
-    color: var(--text3);
-    flex-shrink: 0;
-    margin-top: 3px;
-    font-size: 12px;
-  }
-
-  .dt-question {
-    font-size: 12px;
-    color: var(--text);
-  }
-
-  .dt-answer {
-    font-size: 11px;
-    color: var(--text2);
-  }
-
-  .dt-destination {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 500;
-    margin-top: 4px;
-  }
-
-  .dest-todo { background: rgba(37,100,207,0.15); color: #6699ff; border: 1px solid rgba(37,100,207,0.3); }
-  .dest-planner { background: rgba(49,117,47,0.15); color: #66cc66; border: 1px solid rgba(49,117,47,0.3); }
-  .dest-loop { background: rgba(196,62,159,0.15); color: #e066cc; border: 1px solid rgba(196,62,159,0.3); }
-  .dest-lists { background: rgba(33,115,70,0.15); color: #66cc99; border: 1px solid rgba(33,115,70,0.3); }
-  .dest-archive { background: rgba(80,88,112,0.15); color: var(--text3); border: 1px solid var(--border); }
-  .dest-ai { background: rgba(245,165,36,0.15); color: var(--amber); border: 1px solid rgba(245,165,36,0.3); }
-  .dest-sharepoint { background: rgba(3,131,135,0.15); color: #66cccc; border: 1px solid rgba(3,131,135,0.3); }
-
+  .dt-diamond { width: 20px; height: 20px; background: var(--surface); border: 1px solid var(--amber); transform: rotate(45deg); flex-shrink: 0; margin-top: 4px; }
+  .dt-arrow   { color: var(--text3); flex-shrink: 0; margin-top: 3px; font-size: 12px; }
+  .dt-question{ font-size: 12px; color: var(--text); }
+  .dt-answer  { font-size: 11px; color: var(--text2); }
+  .dt-destination { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 11px; font-weight: 500; margin-top: 4px; }
+  .dest-todo      { background: rgba(37,100,207,0.15); color: #6699ff; border: 1px solid rgba(37,100,207,0.3); }
+  .dest-planner   { background: rgba(49,117,47,0.15);  color: #66cc66; border: 1px solid rgba(49,117,47,0.3); }
+  .dest-loop      { background: rgba(196,62,159,0.15); color: #e066cc; border: 1px solid rgba(196,62,159,0.3); }
+  .dest-lists     { background: rgba(33,115,70,0.15);  color: #66cc99; border: 1px solid rgba(33,115,70,0.3); }
+  .dest-archive   { background: rgba(80,88,112,0.15);  color: var(--text3); border: 1px solid var(--border); }
+  .dest-ai        { background: rgba(245,165,36,0.15); color: var(--amber); border: 1px solid rgba(245,165,36,0.3); }
+  .dest-sharepoint{ background: rgba(3,131,135,0.15);  color: #66cccc; border: 1px solid rgba(3,131,135,0.3); }
   .branch-yes { color: var(--green); font-size: 10px; letter-spacing: 0.05em; }
-  .branch-no { color: var(--red); font-size: 10px; letter-spacing: 0.05em; }
+  .branch-no  { color: var(--red);   font-size: 10px; letter-spacing: 0.05em; }
 
-  /* WORKFLOW DIAGRAMS */
-  .workflow {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 28px;
-    margin-bottom: 20px;
-  }
+  /* ─── WORKFLOWS ─── */
+  .workflow { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 20px; }
+  .wf-steps { display: flex; flex-direction: column; gap: 0; }
+  .wf-step  { display: grid; grid-template-columns: 32px 1fr; gap: 16px; position: relative; }
+  .wf-step:not(:last-child) .wf-line { position: absolute; left: 15px; top: 36px; bottom: 0; width: 1px; background: var(--border2); }
+  .wf-num { width: 32px; height: 32px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text2); flex-shrink: 0; z-index: 1; position: relative; }
+  .wf-content { padding: 4px 0 24px; }
+  .wf-action  { font-size: 13px; color: var(--text); margin-bottom: 6px; }
+  .wf-detail  { font-size: 11px; color: var(--text2); line-height: 1.6; }
+  .wf-tool-tag{ display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 500; margin-right: 6px; margin-top: 6px; }
 
-  .wf-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
+  /* ─── TEMPLATES ─── */
+  .template-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+  .template-header { padding: 16px 20px; background: var(--surface2); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .template-title { font-size: 13px; color: var(--text); font-weight: 500; }
+  .template-tool  { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
+  .template-body  { padding: 20px; font-size: 12px; color: var(--text2); line-height: 1.8; }
+  .template-body .field { color: var(--accent); }
+  .template-body .section-label { color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; margin: 14px 0 6px; display: block; }
+  .template-body .rule { color: var(--text3); font-size: 11px; font-style: italic; padding: 8px 12px; border-left: 2px solid var(--border2); margin: 8px 0; }
 
-  .wf-step {
-    display: grid;
-    grid-template-columns: 32px 1fr;
-    gap: 16px;
-    position: relative;
-  }
+  /* ─── WEEKLY REVIEW ─── */
+  .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .review-block { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+  .review-time  { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 6px; }
+  .review-name  { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; color: var(--text); margin-bottom: 12px; }
+  .review-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .review-items li { font-size: 11px; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; line-height: 1.4; }
+  .review-items li::before { content: '→'; color: var(--text3); flex-shrink: 0; margin-top: 1px; }
 
-  .wf-step:not(:last-child) .wf-line {
-    position: absolute;
-    left: 15px;
-    top: 36px;
-    bottom: 0;
-    width: 1px;
-    background: var(--border2);
-  }
-
-  .wf-num {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    color: var(--text2);
-    flex-shrink: 0;
-    z-index: 1;
-    position: relative;
-  }
-
-  .wf-content {
-    padding: 4px 0 24px;
-  }
-
-  .wf-action {
-    font-size: 13px;
-    color: var(--text);
-    margin-bottom: 6px;
-  }
-
-  .wf-detail {
-    font-size: 11px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  .wf-tool-tag {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 3px;
-    font-size: 10px;
-    font-weight: 500;
-    margin-right: 6px;
-    margin-top: 6px;
-  }
-
-  /* TEMPLATES */
-  .template-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-
-  .template-header {
-    padding: 16px 20px;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .template-title {
-    font-size: 13px;
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .template-tool {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text3);
-  }
-
-  .template-body {
-    padding: 20px;
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.8;
-  }
-
-  .template-body .field {
-    color: var(--accent);
-  }
-
-  .template-body .section-label {
-    color: var(--text3);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin: 14px 0 6px;
-    display: block;
-  }
-
-  .template-body .rule {
-    color: var(--text3);
-    font-size: 11px;
-    font-style: italic;
-    padding: 8px 12px;
-    border-left: 2px solid var(--border2);
-    margin: 8px 0;
-  }
-
-  /* WEEKLY REVIEW */
-  .review-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 12px;
-  }
-
-  .review-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-  }
-
-  .review-time {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text3);
-    margin-bottom: 6px;
-  }
-
-  .review-name {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 15px;
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-
-  .review-items {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .review-items li {
-    font-size: 11px;
-    color: var(--text2);
-    display: flex;
-    gap: 8px;
-    align-items: flex-start;
-    line-height: 1.4;
-  }
-
-  .review-items li::before {
-    content: '→';
-    color: var(--text3);
-    flex-shrink: 0;
-    margin-top: 1px;
-  }
-
-  /* INFO BOX */
-  .info-box {
-    background: rgba(79,124,255,0.06);
-    border: 1px solid rgba(79,124,255,0.2);
-    border-radius: 6px;
-    padding: 14px 18px;
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.6;
-    margin: 16px 0;
-  }
-
+  /* ─── INFO / WARN BOXES ─── */
+  .info-box { background: rgba(79,124,255,0.06); border: 1px solid rgba(79,124,255,0.2); border-radius: 6px; padding: 14px 18px; font-size: 12px; color: var(--text2); line-height: 1.6; margin: 16px 0; }
   .info-box strong { color: var(--accent); }
-
-  .warn-box {
-    background: rgba(245,165,36,0.06);
-    border: 1px solid rgba(245,165,36,0.2);
-    border-radius: 6px;
-    padding: 14px 18px;
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.6;
-    margin: 16px 0;
-  }
+  .warn-box { background: rgba(245,165,36,0.06); border: 1px solid rgba(245,165,36,0.2); border-radius: 6px; padding: 14px 18px; font-size: 12px; color: var(--text2); line-height: 1.6; margin: 16px 0; }
   .warn-box strong { color: var(--amber); }
 
-  /* GRID UTILITIES */
+  /* ─── GRID ─── */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
 
-  /* INITIATIVE LIFECYCLE */
-  .lifecycle {
-    display: flex;
-    gap: 2px;
-    margin: 20px 0;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-
-  .lc-stage {
-    flex: 1;
-    min-width: 120px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 16px 14px;
-    position: relative;
-  }
-
-  .lc-stage::after {
-    content: '▶';
-    position: absolute;
-    right: -12px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    color: var(--text3);
-    z-index: 1;
-  }
-
+  /* ─── LIFECYCLE ─── */
+  .lifecycle { display: flex; gap: 2px; margin: 20px 0; overflow-x: auto; padding-bottom: 4px; }
+  .lc-stage { flex: 1; min-width: 120px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px 14px; position: relative; }
+  .lc-stage::after { content: '▶'; position: absolute; right: -12px; top: 50%; transform: translateY(-50%); font-size: 10px; color: var(--text3); z-index: 1; }
   .lc-stage:last-child::after { display: none; }
+  .lc-num  { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+  .lc-name { font-size: 12px; color: var(--text); font-weight: 500; margin-bottom: 8px; }
+  .lc-items{ font-size: 10px; color: var(--text2); line-height: 1.6; }
 
-  .lc-num {
-    font-size: 10px;
-    color: var(--text3);
-    margin-bottom: 4px;
-  }
-
-  .lc-name {
-    font-size: 12px;
-    color: var(--text);
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-
-  .lc-items {
-    font-size: 10px;
-    color: var(--text2);
-    line-height: 1.6;
-  }
-
-  /* COLOR PILL */
-  .pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 3px 10px 3px 6px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 500;
-  }
-  .pill-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  /* INTAKE MATRIX */
-  .intake-matrix {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .matrix-header {
-    display: grid;
-    grid-template-columns: 160px 1fr 1fr 1fr;
-    gap: 0;
-    background: var(--surface2);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .matrix-cell {
-    padding: 10px 14px;
-    font-size: 11px;
-    border-right: 1px solid var(--border);
-  }
+  /* ─── INTAKE MATRIX ─── */
+  .intake-matrix { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .matrix-header { display: grid; grid-template-columns: 160px 1fr 1fr 1fr; background: var(--surface2); border-bottom: 1px solid var(--border); }
+  .matrix-cell { padding: 10px 14px; font-size: 11px; border-right: 1px solid var(--border); }
   .matrix-cell:last-child { border-right: none; }
-
-  .matrix-row {
-    display: grid;
-    grid-template-columns: 160px 1fr 1fr 1fr;
-    border-bottom: 1px solid var(--border);
-  }
+  .matrix-row { display: grid; grid-template-columns: 160px 1fr 1fr 1fr; border-bottom: 1px solid var(--border); }
   .matrix-row:last-child { border-bottom: none; }
   .matrix-row:nth-child(odd) .matrix-cell { background: rgba(255,255,255,0.01); }
+  .matrix-row .matrix-cell:first-child { color: var(--text); font-weight: 500; }
+  .matrix-row .matrix-cell { color: var(--text2); }
 
-  .matrix-row .matrix-cell:first-child {
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .matrix-row .matrix-cell {
-    color: var(--text2);
-  }
+  /* ─── PROMPT CARDS ─── */
+  .prompt-filter { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
+  .pf-btn { padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.03em; }
+  .pf-btn:hover { border-color: var(--accent); color: var(--text); }
+  .pf-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .prompt-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 16px; overflow: hidden; transition: border-color 0.15s; }
+  .prompt-card:hover { border-color: var(--border2); }
+  .prompt-card.hidden { display: none; }
+  .prompt-card-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px 14px; gap: 12px; }
+  .prompt-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .prompt-meta  { font-size: 11px; color: var(--text3); }
+  .prompt-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .prompt-tag { font-size: 10px; padding: 3px 9px; border-radius: 3px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; }
+  .tag-meeting   { background: rgba(98,100,167,0.2);  color: #9b9de0; border: 1px solid rgba(98,100,167,0.3); }
+  .tag-initiative{ background: rgba(196,62,159,0.15); color: #e066cc; border: 1px solid rgba(196,62,159,0.3); }
+  .tag-review    { background: rgba(61,214,140,0.1);  color: #3dd68c; border: 1px solid rgba(61,214,140,0.2); }
+  .tag-pipeline  { background: rgba(79,124,255,0.15); color: #7da5ff; border: 1px solid rgba(79,124,255,0.3); }
+  .tag-comms     { background: rgba(3,131,135,0.15);  color: #66cccc; border: 1px solid rgba(3,131,135,0.3); }
+  .tag-planning  { background: rgba(245,165,36,0.12); color: var(--amber); border: 1px solid rgba(245,165,36,0.25); }
+  .copy-btn { padding: 6px 14px; border-radius: 5px; border: 1px solid var(--border2); background: var(--surface2); color: var(--text); font-family: 'DM Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .copy-btn:hover  { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .copy-btn.copied { background: var(--green); border-color: var(--green); color: #0d1a12; }
+  .prompt-when { padding: 0 20px 12px; font-size: 11px; color: var(--text3); font-style: italic; border-bottom: 1px solid var(--border); line-height: 1.5; }
+  .prompt-body { padding: 18px 20px; font-size: 12px; color: var(--text2); line-height: 1.8; white-space: pre-wrap; background: var(--bg); border-radius: 0 0 10px 10px; }
+  .prompt-body .ph { color: var(--accent); font-weight: 500; }
 </style>
 </head>
 <body>
 
+<!-- ─── TOP NAV ─── -->
 <nav>
-  <div class="nav-title">GTM / RevOps OS</div>
-  <div class="nav-links">
-    <button class="nav-link active" onclick="show('system-map')">System Map</button>
-    <button class="nav-link" onclick="show('intake')">Intake & Triage</button>
-    <button class="nav-link" onclick="show('initiatives')">Initiatives</button>
-    <button class="nav-link" onclick="show('decisions')">Decision Trees</button>
-    <button class="nav-link" onclick="show('workflows')">Workflows</button>
-    <button class="nav-link" onclick="show('templates')">Templates</button>
-    <button class="nav-link" onclick="show('weekly')">Weekly Review</button>
-    <button class="nav-link" onclick="show('ai')">AI Layer</button>
+  <div class="nav-left">
+    <div class="nav-title">GTM / RevOps OS</div>
+    <div class="nav-groups">
+      <button class="nav-group-btn active" onclick="showGroup('system', this)">① System</button>
+      <button class="nav-group-btn" onclick="showGroup('operations', this)">② Operations</button>
+      <button class="nav-group-btn" onclick="showGroup('toolkit', this)">③ Toolkit</button>
+    </div>
+  </div>
+  <div class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+    <span class="theme-icon">🌙</span>
+    <div class="toggle-track" id="themeTrack">
+      <div class="toggle-thumb"></div>
+    </div>
+    <span class="theme-icon">☀️</span>
   </div>
 </nav>
 
-<!-- SYSTEM MAP -->
+<!-- ─── SUB-TAB BARS ─── -->
+<div class="subtab-bar visible" id="subtabs-system">
+  <button class="subtab-btn active" onclick="showSection('system-map', this, 'system')">System Map</button>
+  <button class="subtab-btn" onclick="showSection('intake', this, 'system')">Intake & Triage</button>
+</div>
+<div class="subtab-bar" id="subtabs-operations">
+  <button class="subtab-btn active" onclick="showSection('initiatives', this, 'operations')">Initiatives</button>
+  <button class="subtab-btn" onclick="showSection('workflows', this, 'operations')">Workflows</button>
+  <button class="subtab-btn" onclick="showSection('weekly', this, 'operations')">Weekly Review</button>
+</div>
+<div class="subtab-bar" id="subtabs-toolkit">
+  <button class="subtab-btn active" onclick="showSection('decisions', this, 'toolkit')">Decision Trees</button>
+  <button class="subtab-btn" onclick="showSection('templates', this, 'toolkit')">Templates</button>
+  <button class="subtab-btn" onclick="showSection('ai', this, 'toolkit')">AI Prompts</button>
+</div>
+
 <div class="section active" id="system-map">
   <h1>The Operating System</h1>
   <div class="subtitle">A layered architecture for GTM & RevOps work — from signal to execution.</div>
@@ -931,7 +666,6 @@
   </div>
 </div>
 
-<!-- INTAKE & TRIAGE -->
 <div class="section" id="intake">
   <h1>Intake & Triage</h1>
   <div class="subtitle">How signals enter the system and get routed to the right layer.</div>
@@ -1103,7 +837,6 @@
   </div>
 </div>
 
-<!-- INITIATIVES -->
 <div class="section" id="initiatives">
   <h1>Initiative Management</h1>
   <div class="subtitle">The organizing unit of all sustained work. Everything maps to an initiative.</div>
@@ -1187,7 +920,182 @@
   </div>
 </div>
 
-<!-- DECISION TREES -->
+<div class="section" id="workflows">
+  <h1>Operational Workflows</h1>
+  <div class="subtitle">Step-by-step flows for the most common RevOps / GTM operational patterns.</div>
+
+  <h2>New Initiative Launch</h2>
+  <div class="workflow">
+    <div class="dt-title">🚀 Spinning Up a New Initiative</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Validate it qualifies as an initiative (use the decision tree)</div>
+          <div class="wf-detail">If no → task in To Do or Planner. If yes → continue.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Add a row to the Lists Initiative Registry</div>
+          <div class="wf-detail">Name, Status=Active, Phase, Owner, Target Date. Leave Loop/Planner links blank for now.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(33,115,70,0.15); color:#66cc99; border:1px solid rgba(33,115,70,0.3);">Lists</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Create the Loop page using the Initiative Template</div>
+          <div class="wf-detail">Fill in: Purpose, Current State, Goal, Stakeholders, Key Decisions (empty), Next Actions, Open Questions. Link SharePoint folder if one exists.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Create a Planner board for the initiative (if execution-ready)</div>
+          <div class="wf-detail">Use buckets: This Sprint / Next Up / Blocked / Done. Only create if you have actual tasks to execute now.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(49,117,47,0.15); color:#66cc66; border:1px solid rgba(49,117,47,0.3);">Planner</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Update Lists row with Loop and Planner links</div>
+          <div class="wf-detail">The registry should always be a reliable index to the full context.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">6</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Optional: use AI to draft the Loop page scaffold</div>
+          <div class="wf-detail">Give Claude the initiative name, your raw notes/context, and ask it to draft the Loop page structure. Review and customize.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Pipeline Review Preparation (GTM Example)</h2>
+  <div class="workflow">
+    <div class="dt-title">📊 Weekly Pipeline Review Prep</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Pull pipeline data from CRM (day before review)</div>
+          <div class="wf-detail">Export or screenshot current pipeline by stage, rep, and deal age.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Run AI analysis on pipeline data</div>
+          <div class="wf-detail">Paste pipeline snapshot into Claude. Ask: "What are the top 3 risks, top 3 opportunities, and any patterns I should flag for the team meeting?"</div>
+          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Update Loop page for Pipeline Review initiative</div>
+          <div class="wf-detail">Paste your pre-meeting analysis. Note: deals at risk, stale opportunities, deals moved this week.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">After review: capture decisions and action items only</div>
+          <div class="wf-detail">Not a transcript. What changed? What's the follow-up? Who owns what?</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Route follow-up actions to correct owners</div>
+          <div class="wf-detail">Your tasks → Planner. Others' tasks → communicate via Teams. Update Loop status.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="weekly">
+  <h1>Weekly Review System</h1>
+  <div class="subtitle">A sustainable rhythm to maintain system integrity without turning it into a second job.</div>
+
+  <div class="warn-box">
+    <strong>The weekly review is not a meeting with yourself.</strong> It's a 30–45 minute system maintenance pass. Its job is to close loops, update context, and set priorities — not to plan from scratch.
+  </div>
+
+  <h2>The Weekly Review Rhythm</h2>
+  <div class="review-grid">
+    <div class="review-block">
+      <div class="review-time">Monday AM · 15 min</div>
+      <div class="review-name">Sprint Set</div>
+      <ul class="review-items">
+        <li>Open Planner — what's in "This Sprint" from last week?</li>
+        <li>Move incomplete items: keep, defer, or drop</li>
+        <li>Pull 3–5 items from "Next Up" into "This Sprint"</li>
+        <li>Open Lists — any initiative status changes needed?</li>
+        <li>Set your top 3 priorities for the week in To Do</li>
+      </ul>
+    </div>
+
+    <div class="review-block">
+      <div class="review-time">Wednesday · 10 min</div>
+      <div class="review-name">Midweek Pulse</div>
+      <ul class="review-items">
+        <li>Check Planner "Blocked" bucket — can anything be unblocked?</li>
+        <li>Scan To Do for items that should be promoted to Planner</li>
+        <li>Any Loop pages that need a quick update based on meetings this week?</li>
+        <li>Quick: am I on track for the week's top 3?</li>
+      </ul>
+    </div>
+
+    <div class="review-block">
+      <div class="review-time">Friday · 20 min</div>
+      <div class="review-name">Week Close</div>
+      <ul class="review-items">
+        <li>Archive Done tasks in all Planner boards</li>
+        <li>Update the Weekly Review Loop page (what moved, what didn't)</li>
+        <li>Check Lists — update any initiative statuses</li>
+        <li>Scan To Do — anything stale to archive?</li>
+        <li>Flag 3 priorities for Monday's sprint set</li>
+      </ul>
+    </div>
+
+    <div class="review-block">
+      <div class="review-time">Monthly · 30 min</div>
+      <div class="review-name">System Audit</div>
+      <ul class="review-items">
+        <li>Review all initiatives in Lists — any to close, pause, or re-scope?</li>
+        <li>Review all Loop pages — any stale or outdated pages to archive?</li>
+        <li>Planner boards: any boards for closed initiatives still active?</li>
+        <li>To Do: clear out anything older than 30 days</li>
+        <li>Ask: is the system still serving me, or am I serving the system?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top: 24px;">
+    <strong>Anti-patterns to watch for:</strong> Planner tasks that never move → planning problem, not execution problem. Loop pages that never get updated → initiative is probably stale. To Do list growing constantly → intake is too broad, review the filter. Lists with 20+ active initiatives → you're overcommitted.
+  </div>
+</div>
+
 <div class="section" id="decisions">
   <h1>Decision Trees</h1>
   <div class="subtitle">Quick routing logic for the most common operational questions.</div>
@@ -1319,121 +1227,6 @@
   </div>
 </div>
 
-<!-- WORKFLOWS -->
-<div class="section" id="workflows">
-  <h1>Operational Workflows</h1>
-  <div class="subtitle">Step-by-step flows for the most common RevOps / GTM operational patterns.</div>
-
-  <h2>New Initiative Launch</h2>
-  <div class="workflow">
-    <div class="dt-title">🚀 Spinning Up a New Initiative</div>
-    <div class="wf-steps">
-      <div class="wf-step">
-        <div class="wf-num">1</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Validate it qualifies as an initiative (use the decision tree)</div>
-          <div class="wf-detail">If no → task in To Do or Planner. If yes → continue.</div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">2</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Add a row to the Lists Initiative Registry</div>
-          <div class="wf-detail">Name, Status=Active, Phase, Owner, Target Date. Leave Loop/Planner links blank for now.</div>
-          <div><span class="wf-tool-tag" style="background:rgba(33,115,70,0.15); color:#66cc99; border:1px solid rgba(33,115,70,0.3);">Lists</span></div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">3</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Create the Loop page using the Initiative Template</div>
-          <div class="wf-detail">Fill in: Purpose, Current State, Goal, Stakeholders, Key Decisions (empty), Next Actions, Open Questions. Link SharePoint folder if one exists.</div>
-          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span></div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">4</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Create a Planner board for the initiative (if execution-ready)</div>
-          <div class="wf-detail">Use buckets: This Sprint / Next Up / Blocked / Done. Only create if you have actual tasks to execute now.</div>
-          <div><span class="wf-tool-tag" style="background:rgba(49,117,47,0.15); color:#66cc66; border:1px solid rgba(49,117,47,0.3);">Planner</span></div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">5</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Update Lists row with Loop and Planner links</div>
-          <div class="wf-detail">The registry should always be a reliable index to the full context.</div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">6</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Optional: use AI to draft the Loop page scaffold</div>
-          <div class="wf-detail">Give Claude the initiative name, your raw notes/context, and ask it to draft the Loop page structure. Review and customize.</div>
-          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h2>Pipeline Review Preparation (GTM Example)</h2>
-  <div class="workflow">
-    <div class="dt-title">📊 Weekly Pipeline Review Prep</div>
-    <div class="wf-steps">
-      <div class="wf-step">
-        <div class="wf-num">1</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Pull pipeline data from CRM (day before review)</div>
-          <div class="wf-detail">Export or screenshot current pipeline by stage, rep, and deal age.</div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">2</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Run AI analysis on pipeline data</div>
-          <div class="wf-detail">Paste pipeline snapshot into Claude. Ask: "What are the top 3 risks, top 3 opportunities, and any patterns I should flag for the team meeting?"</div>
-          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span></div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">3</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Update Loop page for Pipeline Review initiative</div>
-          <div class="wf-detail">Paste your pre-meeting analysis. Note: deals at risk, stale opportunities, deals moved this week.</div>
-          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span></div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">4</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">After review: capture decisions and action items only</div>
-          <div class="wf-detail">Not a transcript. What changed? What's the follow-up? Who owns what?</div>
-        </div>
-      </div>
-      <div class="wf-step">
-        <div class="wf-num">5</div>
-        <div class="wf-line"></div>
-        <div class="wf-content">
-          <div class="wf-action">Route follow-up actions to correct owners</div>
-          <div class="wf-detail">Your tasks → Planner. Others' tasks → communicate via Teams. Update Loop status.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- TEMPLATES -->
 <div class="section" id="templates">
   <h1>Templates</h1>
   <div class="subtitle">Copy-paste ready structures for Loop pages, Planner boards, and Lists.</div>
@@ -1540,71 +1333,6 @@
   </div>
 </div>
 
-<!-- WEEKLY REVIEW -->
-<div class="section" id="weekly">
-  <h1>Weekly Review System</h1>
-  <div class="subtitle">A sustainable rhythm to maintain system integrity without turning it into a second job.</div>
-
-  <div class="warn-box">
-    <strong>The weekly review is not a meeting with yourself.</strong> It's a 30–45 minute system maintenance pass. Its job is to close loops, update context, and set priorities — not to plan from scratch.
-  </div>
-
-  <h2>The Weekly Review Rhythm</h2>
-  <div class="review-grid">
-    <div class="review-block">
-      <div class="review-time">Monday AM · 15 min</div>
-      <div class="review-name">Sprint Set</div>
-      <ul class="review-items">
-        <li>Open Planner — what's in "This Sprint" from last week?</li>
-        <li>Move incomplete items: keep, defer, or drop</li>
-        <li>Pull 3–5 items from "Next Up" into "This Sprint"</li>
-        <li>Open Lists — any initiative status changes needed?</li>
-        <li>Set your top 3 priorities for the week in To Do</li>
-      </ul>
-    </div>
-
-    <div class="review-block">
-      <div class="review-time">Wednesday · 10 min</div>
-      <div class="review-name">Midweek Pulse</div>
-      <ul class="review-items">
-        <li>Check Planner "Blocked" bucket — can anything be unblocked?</li>
-        <li>Scan To Do for items that should be promoted to Planner</li>
-        <li>Any Loop pages that need a quick update based on meetings this week?</li>
-        <li>Quick: am I on track for the week's top 3?</li>
-      </ul>
-    </div>
-
-    <div class="review-block">
-      <div class="review-time">Friday · 20 min</div>
-      <div class="review-name">Week Close</div>
-      <ul class="review-items">
-        <li>Archive Done tasks in all Planner boards</li>
-        <li>Update the Weekly Review Loop page (what moved, what didn't)</li>
-        <li>Check Lists — update any initiative statuses</li>
-        <li>Scan To Do — anything stale to archive?</li>
-        <li>Flag 3 priorities for Monday's sprint set</li>
-      </ul>
-    </div>
-
-    <div class="review-block">
-      <div class="review-time">Monthly · 30 min</div>
-      <div class="review-name">System Audit</div>
-      <ul class="review-items">
-        <li>Review all initiatives in Lists — any to close, pause, or re-scope?</li>
-        <li>Review all Loop pages — any stale or outdated pages to archive?</li>
-        <li>Planner boards: any boards for closed initiatives still active?</li>
-        <li>To Do: clear out anything older than 30 days</li>
-        <li>Ask: is the system still serving me, or am I serving the system?</li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="info-box" style="margin-top: 24px;">
-    <strong>Anti-patterns to watch for:</strong> Planner tasks that never move → planning problem, not execution problem. Loop pages that never get updated → initiative is probably stale. To Do list growing constantly → intake is too broad, review the filter. Lists with 20+ active initiatives → you're overcommitted.
-  </div>
-</div>
-
-<!-- AI LAYER -->
 <div class="section" id="ai">
   <h1>AI-Assisted Workflows</h1>
   <div class="subtitle">Claude and ChatGPT as cognitive processing tools — not autonomous agents.</div>
@@ -2302,174 +2030,91 @@ Please:
   </div><!-- end promptLibrary -->
 </div>
 
-<style>
-  /* PROMPT FILTER */
-  .prompt-filter {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-  }
-
-  .pf-btn {
-    padding: 5px 14px;
-    border-radius: 20px;
-    border: 1px solid var(--border2);
-    background: var(--surface);
-    color: var(--text2);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-    letter-spacing: 0.03em;
-  }
-  .pf-btn:hover { border-color: var(--accent); color: var(--text); }
-  .pf-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-  /* PROMPT CARDS */
-  .prompt-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    margin-bottom: 16px;
-    overflow: hidden;
-    transition: border-color 0.15s;
-  }
-  .prompt-card:hover { border-color: var(--border2); }
-  .prompt-card.hidden { display: none; }
-
-  .prompt-card-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 18px 20px 14px;
-    gap: 12px;
-  }
-
-  .prompt-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .prompt-meta {
-    font-size: 11px;
-    color: var(--text3);
-  }
-
-  .prompt-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-shrink: 0;
-  }
-
-  .prompt-tag {
-    font-size: 10px;
-    padding: 3px 9px;
-    border-radius: 3px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .tag-meeting { background: rgba(98,100,167,0.2); color: #9b9de0; border: 1px solid rgba(98,100,167,0.3); }
-  .tag-initiative { background: rgba(196,62,159,0.15); color: #e066cc; border: 1px solid rgba(196,62,159,0.3); }
-  .tag-review { background: rgba(61,214,140,0.1); color: #3dd68c; border: 1px solid rgba(61,214,140,0.2); }
-  .tag-pipeline { background: rgba(79,124,255,0.15); color: #7da5ff; border: 1px solid rgba(79,124,255,0.3); }
-  .tag-comms { background: rgba(3,131,135,0.15); color: #66cccc; border: 1px solid rgba(3,131,135,0.3); }
-  .tag-planning { background: rgba(245,165,36,0.12); color: var(--amber); border: 1px solid rgba(245,165,36,0.25); }
-
-  .copy-btn {
-    padding: 6px 14px;
-    border-radius: 5px;
-    border: 1px solid var(--border2);
-    background: var(--surface2);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .copy-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .copy-btn.copied { background: var(--green); border-color: var(--green); color: #0d1a12; }
-
-  .prompt-when {
-    padding: 0 20px 12px;
-    font-size: 11px;
-    color: var(--text3);
-    font-style: italic;
-    border-bottom: 1px solid var(--border);
-    line-height: 1.5;
-  }
-
-  .prompt-body {
-    padding: 18px 20px;
-    font-size: 12px;
-    color: var(--text2);
-    line-height: 1.8;
-    white-space: pre-wrap;
-    background: var(--bg);
-    border-radius: 0 0 10px 10px;
-  }
-
-  .prompt-body .ph {
-    color: var(--accent);
-    font-weight: 500;
-  }
-</style>
 
 <script>
-  function show(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.target.classList.add('active');
+  // ─── GROUP / SUBTAB NAVIGATION ───
+  const groupDefaults = {
+    system: 'system-map',
+    operations: 'initiatives',
+    toolkit: 'decisions'
+  };
+
+  function showGroup(group, btn) {
+    // Update main nav buttons
+    document.querySelectorAll('.nav-group-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // Show correct subtab bar
+    document.querySelectorAll('.subtab-bar').forEach(b => b.classList.remove('visible'));
+    document.getElementById('subtabs-' + group).classList.add('visible');
+
+    // Show the default section for this group
+    showSectionById(groupDefaults[group]);
+
+    // Activate the first subtab in this group
+    const firstSubtab = document.querySelector('#subtabs-' + group + ' .subtab-btn');
+    document.querySelectorAll('.subtab-btn').forEach(b => b.classList.remove('active'));
+    firstSubtab.classList.add('active');
+
     window.scrollTo(0, 0);
   }
 
+  function showSection(id, btn, group) {
+    // Update subtab buttons within this group
+    document.querySelectorAll('#subtabs-' + group + ' .subtab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    showSectionById(id);
+    window.scrollTo(0, 0);
+  }
+
+  function showSectionById(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    const sec = document.getElementById(id);
+    if (sec) sec.classList.add('active');
+  }
+
+  // ─── THEME TOGGLE ───
+  function toggleTheme() {
+    const body = document.body;
+    const track = document.getElementById('themeTrack');
+    body.classList.toggle('light');
+    track.classList.toggle('light-on');
+    localStorage.setItem('gtmos-theme', body.classList.contains('light') ? 'light' : 'dark');
+  }
+
+  // Restore saved theme
+  (function() {
+    const saved = localStorage.getItem('gtmos-theme');
+    if (saved === 'light') {
+      document.body.classList.add('light');
+      const track = document.getElementById('themeTrack');
+      if (track) track.classList.add('light-on');
+    }
+  })();
+
+  // ─── COPY PROMPT ───
   function copyPrompt(btn) {
-    const card = btn.closest('.prompt-card');
-    const promptBody = card.querySelector('.prompt-body');
-    const text = promptBody.getAttribute('data-prompt');
+    const text = btn.closest('.prompt-card').querySelector('.prompt-body').getAttribute('data-prompt');
     navigator.clipboard.writeText(text).then(() => {
       btn.textContent = '✓ Copied!';
       btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'Copy Prompt';
-        btn.classList.remove('copied');
-      }, 2000);
+      setTimeout(() => { btn.textContent = 'Copy Prompt'; btn.classList.remove('copied'); }, 2000);
     }).catch(() => {
-      // Fallback
       const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      btn.textContent = '✓ Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'Copy Prompt';
-        btn.classList.remove('copied');
-      }, 2000);
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      btn.textContent = '✓ Copied!'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy Prompt'; btn.classList.remove('copied'); }, 2000);
     });
   }
 
+  // ─── FILTER PROMPTS ───
   function filterPrompts(category, btn) {
     document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll('.prompt-card').forEach(card => {
-      if (category === 'all' || card.dataset.category === category) {
-        card.classList.remove('hidden');
-      } else {
-        card.classList.add('hidden');
-      }
+      card.classList.toggle('hidden', category !== 'all' && card.dataset.category !== category);
     });
   }
 </script>
