@@ -1,0 +1,2477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTM / RevOps Operating System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1f2b;
+    --border: #252b3a;
+    --border2: #2e3650;
+    --text: #e8ecf5;
+    --text2: #8a94ad;
+    --text3: #505870;
+    --accent: #4f7cff;
+    --accent2: #7c4fff;
+    --green: #3dd68c;
+    --amber: #f5a524;
+    --red: #f54f4f;
+    --cyan: #3dcff5;
+
+    /* Tool colors */
+    --outlook: #0078d4;
+    --teams: #6264a7;
+    --todo: #2564cf;
+    --planner: #31752f;
+    --loop: #c43e9f;
+    --lists: #217346;
+    --sharepoint: #038387;
+    --ai: #f5a524;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,20,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 52px;
+  }
+
+  .nav-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+
+  .nav-link {
+    padding: 5px 12px;
+    border-radius: 4px;
+    color: var(--text3);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+  .nav-link:hover, .nav-link.active {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    padding: 40px 32px 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 0.2s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* HEADINGS */
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 36px;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: var(--text);
+    margin: 36px 0 16px;
+  }
+  h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin: 24px 0 12px;
+  }
+
+  .subtitle {
+    color: var(--text2);
+    font-size: 14px;
+    margin-bottom: 40px;
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+
+  /* SYSTEM MAP */
+  .system-map {
+    display: grid;
+    gap: 2px;
+  }
+
+  .layer {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 2px;
+  }
+
+  .layer-label {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 6px 0 0 6px;
+  }
+
+  .layer-name {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .layer-role {
+    font-size: 12px;
+    color: var(--text2);
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+  }
+
+  .layer-tools {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 2px;
+  }
+
+  .tool-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card:last-child { border-radius: 0 6px 6px 0; }
+  .tool-card:hover { border-color: var(--border2); background: var(--surface2); }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+
+  .tool-card[data-tool="outlook"]::before { background: var(--outlook); }
+  .tool-card[data-tool="teams"]::before { background: var(--teams); }
+  .tool-card[data-tool="todo"]::before { background: var(--todo); }
+  .tool-card[data-tool="planner"]::before { background: var(--planner); }
+  .tool-card[data-tool="loop"]::before { background: var(--loop); }
+  .tool-card[data-tool="lists"]::before { background: var(--lists); }
+  .tool-card[data-tool="sharepoint"]::before { background: var(--sharepoint); }
+  .tool-card[data-tool="ai"]::before { background: var(--ai); }
+
+  .tool-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .tool-purpose {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+  .tool-rule {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 2px;
+    font-style: italic;
+  }
+
+  /* FLOW ARROWS */
+  .flow-connector {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    padding-left: 80px;
+    gap: 8px;
+    color: var(--text3);
+    font-size: 11px;
+  }
+  .flow-connector::before {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--border), var(--accent), var(--border));
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  /* PRINCIPLES */
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .principle-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .principle-num {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .principle-text {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .principle-detail {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* DECISION TREES */
+  .decision-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .dt-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dt-start {
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 12px;
+    color: var(--accent);
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .dt-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+
+  .dt-node.indent-1 { padding-left: 40px; }
+  .dt-node.indent-2 { padding-left: 60px; }
+  .dt-node.indent-3 { padding-left: 80px; }
+
+  .dt-diamond {
+    width: 20px;
+    height: 20px;
+    background: var(--surface);
+    border: 1px solid var(--amber);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .dt-arrow {
+    color: var(--text3);
+    flex-shrink: 0;
+    margin-top: 3px;
+    font-size: 12px;
+  }
+
+  .dt-question {
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .dt-answer {
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .dt-destination {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .dest-todo { background: rgba(37,100,207,0.15); color: #6699ff; border: 1px solid rgba(37,100,207,0.3); }
+  .dest-planner { background: rgba(49,117,47,0.15); color: #66cc66; border: 1px solid rgba(49,117,47,0.3); }
+  .dest-loop { background: rgba(196,62,159,0.15); color: #e066cc; border: 1px solid rgba(196,62,159,0.3); }
+  .dest-lists { background: rgba(33,115,70,0.15); color: #66cc99; border: 1px solid rgba(33,115,70,0.3); }
+  .dest-archive { background: rgba(80,88,112,0.15); color: var(--text3); border: 1px solid var(--border); }
+  .dest-ai { background: rgba(245,165,36,0.15); color: var(--amber); border: 1px solid rgba(245,165,36,0.3); }
+  .dest-sharepoint { background: rgba(3,131,135,0.15); color: #66cccc; border: 1px solid rgba(3,131,135,0.3); }
+
+  .branch-yes { color: var(--green); font-size: 10px; letter-spacing: 0.05em; }
+  .branch-no { color: var(--red); font-size: 10px; letter-spacing: 0.05em; }
+
+  /* WORKFLOW DIAGRAMS */
+  .workflow {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .wf-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .wf-step {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    position: relative;
+  }
+
+  .wf-step:not(:last-child) .wf-line {
+    position: absolute;
+    left: 15px;
+    top: 36px;
+    bottom: 0;
+    width: 1px;
+    background: var(--border2);
+  }
+
+  .wf-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--text2);
+    flex-shrink: 0;
+    z-index: 1;
+    position: relative;
+  }
+
+  .wf-content {
+    padding: 4px 0 24px;
+  }
+
+  .wf-action {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .wf-detail {
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .wf-tool-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 6px;
+    margin-top: 6px;
+  }
+
+  /* TEMPLATES */
+  .template-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .template-header {
+    padding: 16px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .template-title {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .template-tool {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+  }
+
+  .template-body {
+    padding: 20px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+  }
+
+  .template-body .field {
+    color: var(--accent);
+  }
+
+  .template-body .section-label {
+    color: var(--text3);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 14px 0 6px;
+    display: block;
+  }
+
+  .template-body .rule {
+    color: var(--text3);
+    font-size: 11px;
+    font-style: italic;
+    padding: 8px 12px;
+    border-left: 2px solid var(--border2);
+    margin: 8px 0;
+  }
+
+  /* WEEKLY REVIEW */
+  .review-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .review-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+  }
+
+  .review-time {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin-bottom: 6px;
+  }
+
+  .review-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .review-items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .review-items li {
+    font-size: 11px;
+    color: var(--text2);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    line-height: 1.4;
+  }
+
+  .review-items li::before {
+    content: '→';
+    color: var(--text3);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* INFO BOX */
+  .info-box {
+    background: rgba(79,124,255,0.06);
+    border: 1px solid rgba(79,124,255,0.2);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+
+  .info-box strong { color: var(--accent); }
+
+  .warn-box {
+    background: rgba(245,165,36,0.06);
+    border: 1px solid rgba(245,165,36,0.2);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+    margin: 16px 0;
+  }
+  .warn-box strong { color: var(--amber); }
+
+  /* GRID UTILITIES */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* INITIATIVE LIFECYCLE */
+  .lifecycle {
+    display: flex;
+    gap: 2px;
+    margin: 20px 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .lc-stage {
+    flex: 1;
+    min-width: 120px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 14px;
+    position: relative;
+  }
+
+  .lc-stage::after {
+    content: '▶';
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    color: var(--text3);
+    z-index: 1;
+  }
+
+  .lc-stage:last-child::after { display: none; }
+
+  .lc-num {
+    font-size: 10px;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .lc-name {
+    font-size: 12px;
+    color: var(--text);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .lc-items {
+    font-size: 10px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* COLOR PILL */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px 3px 6px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .pill-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* INTAKE MATRIX */
+  .intake-matrix {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .matrix-header {
+    display: grid;
+    grid-template-columns: 160px 1fr 1fr 1fr;
+    gap: 0;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .matrix-cell {
+    padding: 10px 14px;
+    font-size: 11px;
+    border-right: 1px solid var(--border);
+  }
+  .matrix-cell:last-child { border-right: none; }
+
+  .matrix-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .matrix-row:last-child { border-bottom: none; }
+  .matrix-row:nth-child(odd) .matrix-cell { background: rgba(255,255,255,0.01); }
+
+  .matrix-row .matrix-cell:first-child {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .matrix-row .matrix-cell {
+    color: var(--text2);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-title">GTM / RevOps OS</div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="show('system-map')">System Map</button>
+    <button class="nav-link" onclick="show('intake')">Intake & Triage</button>
+    <button class="nav-link" onclick="show('initiatives')">Initiatives</button>
+    <button class="nav-link" onclick="show('decisions')">Decision Trees</button>
+    <button class="nav-link" onclick="show('workflows')">Workflows</button>
+    <button class="nav-link" onclick="show('templates')">Templates</button>
+    <button class="nav-link" onclick="show('weekly')">Weekly Review</button>
+    <button class="nav-link" onclick="show('ai')">AI Layer</button>
+  </div>
+</nav>
+
+<!-- SYSTEM MAP -->
+<div class="section active" id="system-map">
+  <h1>The Operating System</h1>
+  <div class="subtitle">A layered architecture for GTM & RevOps work — from signal to execution.</div>
+
+  <div class="system-map">
+
+    <!-- LAYER 1: INTAKE -->
+    <div class="layer">
+      <div class="layer-label">
+        <div class="layer-name">Layer 1</div>
+        <div class="layer-role">Communication Intake</div>
+      </div>
+      <div class="layer-tools">
+        <div class="tool-card" data-tool="outlook">
+          <div class="tool-name">Outlook</div>
+          <div class="tool-purpose">Email — async requests, project updates, stakeholder comms</div>
+          <div class="tool-rule">Inbox is not a task list. Process → move on.</div>
+        </div>
+        <div class="tool-card" data-tool="teams">
+          <div class="tool-name">Teams</div>
+          <div class="tool-purpose">Live conversation, meetings, quick collaboration</div>
+          <div class="tool-rule">Meetings do not organize the system. Initiatives do.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:2px; background: linear-gradient(to right, transparent, var(--accent), transparent); margin: 6px 0;"></div>
+
+    <!-- LAYER 2: TRIAGE -->
+    <div class="layer">
+      <div class="layer-label">
+        <div class="layer-name">Layer 2</div>
+        <div class="layer-role">Personal Triage</div>
+      </div>
+      <div class="layer-tools">
+        <div class="tool-card" data-tool="todo">
+          <div class="tool-name">To Do</div>
+          <div class="tool-purpose">Capture everything. Quick tasks. Personal reminders. Waiting-on items.</div>
+          <div class="tool-rule">First landing zone. Not every item here becomes Planner work.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:2px; background: linear-gradient(to right, transparent, var(--accent2), transparent); margin: 6px 0;"></div>
+
+    <!-- LAYER 3: EXECUTION -->
+    <div class="layer">
+      <div class="layer-label">
+        <div class="layer-name">Layer 3</div>
+        <div class="layer-role">Committed Execution</div>
+      </div>
+      <div class="layer-tools">
+        <div class="tool-card" data-tool="planner">
+          <div class="tool-name">Planner</div>
+          <div class="tool-purpose">Committed, initiative-linked tasks. Structured work with owners, dates, status.</div>
+          <div class="tool-rule">Only tasks you WILL do this sprint. No parking lot tasks.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:2px; background: linear-gradient(to right, transparent, var(--loop), transparent); margin: 6px 0;"></div>
+
+    <!-- LAYER 4: STRATEGY -->
+    <div class="layer">
+      <div class="layer-label">
+        <div class="layer-name">Layer 4</div>
+        <div class="layer-role">Strategic Context</div>
+      </div>
+      <div class="layer-tools">
+        <div class="tool-card" data-tool="loop">
+          <div class="tool-name">Loop</div>
+          <div class="tool-purpose">One page per initiative. Context, decisions, status, next actions.</div>
+          <div class="tool-rule">Living document — compressed context, not raw archives.</div>
+        </div>
+        <div class="tool-card" data-tool="lists">
+          <div class="tool-name">Lists</div>
+          <div class="tool-purpose">Initiative registry. Named list of all active initiatives with owner, status, phase.</div>
+          <div class="tool-rule">Major initiatives only. Not tasks.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:2px; background: linear-gradient(to right, transparent, var(--sharepoint), transparent); margin: 6px 0;"></div>
+
+    <!-- LAYER 5: STORAGE -->
+    <div class="layer">
+      <div class="layer-label">
+        <div class="layer-name">Layer 5</div>
+        <div class="layer-role">Document Memory</div>
+      </div>
+      <div class="layer-tools">
+        <div class="tool-card" data-tool="sharepoint">
+          <div class="tool-name">SharePoint</div>
+          <div class="tool-purpose">Files, decks, contracts, reports. Linked from Loop pages.</div>
+          <div class="tool-rule">Referenced from Loop, not navigated independently.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:2px; background: linear-gradient(to right, transparent, var(--ai), transparent); margin: 6px 0;"></div>
+
+    <!-- LAYER 6: AI -->
+    <div class="layer">
+      <div class="layer-label">
+        <div class="layer-name">Layer 6</div>
+        <div class="layer-role">AI Processing</div>
+      </div>
+      <div class="layer-tools">
+        <div class="tool-card" data-tool="ai">
+          <div class="tool-name">Claude</div>
+          <div class="tool-purpose">Synthesis, structure, planning, decision support, context recovery</div>
+          <div class="tool-rule">You retain judgment. AI processes and proposes.</div>
+        </div>
+        <div class="tool-card" data-tool="ai">
+          <div class="tool-name">ChatGPT</div>
+          <div class="tool-purpose">Drafting, brainstorming, research, alternate perspectives</div>
+          <div class="tool-rule">Interchangeable for cognitive processing tasks.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>Core Principles</h2>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-num">01</div>
+      <div class="principle-text">Not every thought becomes a task</div>
+      <div class="principle-detail">Capture in To Do first. Most things resolve themselves or lose relevance. Only elevate what demands action.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">02</div>
+      <div class="principle-text">Not every task becomes an initiative</div>
+      <div class="principle-detail">An initiative has sustained effort, multiple steps, and strategic importance. A task is just work.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">03</div>
+      <div class="principle-text">Meetings don't organize the system — initiatives do</div>
+      <div class="principle-detail">Meetings produce signals. Those signals route into initiatives. The initiative is the organizing unit, not the meeting.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">04</div>
+      <div class="principle-text">One initiative = one persistent Loop page</div>
+      <div class="principle-detail">Every major initiative has a single living page in Loop that holds all compressed context, not scattered notes.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">05</div>
+      <div class="principle-text">Loop holds compressed context, not raw archives</div>
+      <div class="principle-detail">After meetings: extract the delta. Update the Loop page. Don't paste transcripts — synthesize the state change.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-num">06</div>
+      <div class="principle-text">Planner only contains committed executable work</div>
+      <div class="principle-detail">If you're not doing it this sprint, it's not in Planner. No wishlist tasks. No backlog parking in active boards.</div>
+    </div>
+  </div>
+
+  <h2>Information Flow</h2>
+  <div class="info-box">
+    <strong>Signal Flow:</strong> Communication comes in via Outlook/Teams → you process it → atomic action goes to To Do → if initiative-linked, task escalates to Planner → context lives in Loop → files live in SharePoint → AI helps you process at any stage.
+  </div>
+
+  <div style="margin-top: 20px;">
+    <div class="intake-matrix">
+      <div class="matrix-header">
+        <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Input Type</div>
+        <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Goes To</div>
+        <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Loop Update?</div>
+        <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;">Lists Update?</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-cell">Quick email action</div>
+        <div class="matrix-cell">To Do</div>
+        <div class="matrix-cell">No</div>
+        <div class="matrix-cell">No</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-cell">Meeting output</div>
+        <div class="matrix-cell">Loop page (delta only)</div>
+        <div class="matrix-cell">Yes — update status</div>
+        <div class="matrix-cell">If phase changes</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-cell">New initiative idea</div>
+        <div class="matrix-cell">Loop (new page) + Lists</div>
+        <div class="matrix-cell">Yes — create page</div>
+        <div class="matrix-cell">Yes — add row</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-cell">Committed sprint task</div>
+        <div class="matrix-cell">Planner (linked initiative)</div>
+        <div class="matrix-cell">No</div>
+        <div class="matrix-cell">No</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-cell">Reference document</div>
+        <div class="matrix-cell">SharePoint (linked from Loop)</div>
+        <div class="matrix-cell">Add link</div>
+        <div class="matrix-cell">No</div>
+      </div>
+      <div class="matrix-row">
+        <div class="matrix-cell">Vague idea / low urgency</div>
+        <div class="matrix-cell">To Do (flag for review)</div>
+        <div class="matrix-cell">No</div>
+        <div class="matrix-cell">No</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTAKE & TRIAGE -->
+<div class="section" id="intake">
+  <h1>Intake & Triage</h1>
+  <div class="subtitle">How signals enter the system and get routed to the right layer.</div>
+
+  <h2>The Triage Question Stack</h2>
+  <div class="info-box">
+    <strong>Every signal that enters the system gets asked three questions in sequence.</strong> Answer them in order — stop as soon as you have a destination.
+  </div>
+
+  <div class="decision-tree">
+    <div class="dt-title">📥 Universal Intake Filter</div>
+    <div class="dt-start">A signal arrives (email, meeting, message, thought)</div>
+
+    <div class="dt-node">
+      <div class="dt-diamond"></div>
+      <div>
+        <div class="dt-question">1. Does this require any action at all?</div>
+        <div class="dt-answer">Could be FYI, noise, or something that resolves itself.</div>
+      </div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-no">NO →</span></div>
+      <div>
+        <div class="dt-destination dest-archive">Archive / ignore</div>
+        <div class="dt-answer" style="margin-top: 6px;">File the email for reference if needed. Do not create a task.</div>
+      </div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES ↓</span></div>
+    </div>
+
+    <div class="dt-node" style="margin-top: 8px;">
+      <div class="dt-diamond"></div>
+      <div>
+        <div class="dt-question">2. Can I do this in under 5 minutes right now?</div>
+        <div class="dt-answer">Reply, forward, make a quick decision, send a link.</div>
+      </div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div>
+        <div class="dt-destination dest-archive">Do it now, close the loop</div>
+        <div class="dt-answer" style="margin-top: 6px;">No task needed. Execute and move on.</div>
+      </div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-no">NO ↓</span></div>
+    </div>
+
+    <div class="dt-node" style="margin-top: 8px;">
+      <div class="dt-diamond"></div>
+      <div>
+        <div class="dt-question">3. Is this linked to an active initiative?</div>
+        <div class="dt-answer">Does it advance, unblock, or update something already in Lists?</div>
+      </div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div>
+        <div class="dt-destination dest-planner">→ Planner</div>
+        <div class="dt-answer" style="margin-top: 6px;">Create task in the initiative's Planner board. Update Loop page if context changed.</div>
+      </div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-no">NO →</span></div>
+      <div>
+        <div class="dt-destination dest-todo">→ To Do</div>
+        <div class="dt-answer" style="margin-top: 6px;">Capture and triage later. May become an initiative after weekly review.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Email Processing Flow</h2>
+  <div class="workflow">
+    <div class="dt-title">📧 Outlook Inbox Processing</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Open batch of emails (2x per day — morning + afternoon)</div>
+          <div class="wf-detail">Don't live in your inbox. Designated processing windows reduce context-switching.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">For each email: apply the 3-question triage filter</div>
+          <div class="wf-detail">No action needed? Archive. Quick action? Do it. Needs work? Route to To Do or Planner.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Flag initiative-relevant emails for Loop update</div>
+          <div class="wf-detail">If the email contains a decision, blocker, or status update for an initiative — note it. Update Loop page at end of processing session.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Process To Do items created during email review</div>
+          <div class="wf-detail">At end of session: review any new To Do items. Are any of these actually Planner tasks? Promote as needed.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Close Outlook until next processing window</div>
+          <div class="wf-detail">Notifications off. The system handles routing. You don't need to watch it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Meeting Output Processing</h2>
+  <div class="workflow">
+    <div class="dt-title">🎙️ Post-Meeting Workflow (15 min max)</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Immediately after meeting: capture raw outputs</div>
+          <div class="wf-detail">Decisions made. Action items with owners. Blockers surfaced. Questions raised. Do this within 15 minutes while it's fresh.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(37,100,207,0.15); color:#6699ff; border:1px solid rgba(37,100,207,0.3);">To Do</span> for your action items</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Identify which initiative(s) this meeting served</div>
+          <div class="wf-detail">Every meeting should connect to an initiative. If it doesn't, ask why it happened.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Update the Loop page — delta only</div>
+          <div class="wf-detail">Don't paste notes or transcript. Answer: what changed? What was decided? What's the new next step? Write 3–5 compressed lines max. Update the "Last Updated" field.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span> initiative page update</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Promote meeting action items to Planner if committed</div>
+          <div class="wf-detail">Only if you're actually doing these this sprint. Tentative? Leave in To Do.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(49,117,47,0.15); color:#66cc66; border:1px solid rgba(49,117,47,0.3);">Planner</span> if committed this sprint</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Use AI to synthesize if the meeting was complex</div>
+          <div class="wf-detail">Paste your raw notes to Claude. Ask: "Compress this into a 5-line status update for my Loop page." Review and paste the output.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span> for synthesis</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INITIATIVES -->
+<div class="section" id="initiatives">
+  <h1>Initiative Management</h1>
+  <div class="subtitle">The organizing unit of all sustained work. Everything maps to an initiative.</div>
+
+  <h2>What Makes Something an Initiative?</h2>
+  <div class="two-col">
+    <div>
+      <h3>✓ It IS an initiative if:</h3>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:12px; color:var(--text2);">
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Spans more than 1–2 weeks</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Has a defined outcome or goal</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Involves multiple tasks or workstreams</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Requires coordination with others</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Has strategic importance to GTM/RevOps goals</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Will have recurring meetings or touchpoints</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--green);">✓</span> Examples: CRM migration, pipeline review redesign, onboarding playbook, territory planning</li>
+      </ul>
+    </div>
+    <div>
+      <h3>✗ It is NOT an initiative if:</h3>
+      <ul style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:12px; color:var(--text2);">
+        <li style="display:flex; gap:8px;"><span style="color:var(--red);">✗</span> It's a one-time task with no follow-on work</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--red);">✗</span> It's a standing recurring process (use a checklist)</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--red);">✗</span> It's a question or piece of research with a clear end</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--red);">✗</span> It's an idea you haven't committed to yet</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--red);">✗</span> You can complete it in a single focused session</li>
+        <li style="display:flex; gap:8px;"><span style="color:var(--red);">✗</span> It belongs to someone else (you're just a contributor)</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Initiative Lifecycle</h2>
+  <div class="lifecycle">
+    <div class="lc-stage">
+      <div class="lc-num">01</div>
+      <div class="lc-name">Identified</div>
+      <div class="lc-items">In To Do or Loop draft. Not yet committed. Evaluating if real.</div>
+    </div>
+    <div class="lc-stage">
+      <div class="lc-num">02</div>
+      <div class="lc-name">Active</div>
+      <div class="lc-items">In Lists. Loop page exists. Planner board has sprint tasks.</div>
+    </div>
+    <div class="lc-stage">
+      <div class="lc-num">03</div>
+      <div class="lc-name">On Hold</div>
+      <div class="lc-items">In Lists (status = On Hold). Loop page preserved. No Planner tasks.</div>
+    </div>
+    <div class="lc-stage">
+      <div class="lc-num">04</div>
+      <div class="lc-name">Completing</div>
+      <div class="lc-items">Final tasks in Planner. Loop page being closed out + archived.</div>
+    </div>
+    <div class="lc-stage">
+      <div class="lc-num">05</div>
+      <div class="lc-name">Closed</div>
+      <div class="lc-items">Loop page archived. Lists row marked complete. SharePoint for final docs.</div>
+    </div>
+  </div>
+
+  <h2>Lists — Initiative Registry Structure</h2>
+  <div class="template-card">
+    <div class="template-header">
+      <div class="template-title">Microsoft Lists — GTM Initiative Registry</div>
+      <div class="template-tool">Lists</div>
+    </div>
+    <div class="template-body">
+      <span class="section-label">Columns</span>
+      <span class="field">Initiative Name</span> · Text — Short, recognizable name<br>
+      <span class="field">Status</span> · Choice — Active / On Hold / Completing / Closed<br>
+      <span class="field">Phase</span> · Choice — Discovery / Design / Build / Launch / Optimize<br>
+      <span class="field">Owner</span> · Person — Primary accountable person<br>
+      <span class="field">Loop Page</span> · Hyperlink — Direct link to the Loop page<br>
+      <span class="field">Planner Board</span> · Hyperlink — Direct link to Planner board<br>
+      <span class="field">Next Milestone</span> · Text — One line: what's next<br>
+      <span class="field">Target Date</span> · Date<br>
+      <span class="field">Last Updated</span> · Date — When was context last refreshed<br>
+
+      <div class="rule">Keep to 10–15 active initiatives max. More than that = overcommitted system.</div>
+    </div>
+  </div>
+</div>
+
+<!-- DECISION TREES -->
+<div class="section" id="decisions">
+  <h1>Decision Trees</h1>
+  <div class="subtitle">Quick routing logic for the most common operational questions.</div>
+
+  <div class="decision-tree">
+    <div class="dt-title">🗂️ "Where does this go?" — Master Router</div>
+    <div class="dt-start">You have something to place in the system</div>
+
+    <div class="dt-node">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it a reference file or document?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-sharepoint">SharePoint</div><div class="dt-answer" style="margin-top:4px">Then link it from the relevant Loop page.</div></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:12px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it strategic context about an initiative?</div><div class="dt-answer">(decisions, rationale, status, blockers, history)</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-loop">Loop page</div><div class="dt-answer" style="margin-top:4px">Find or create the initiative's Loop page. Compress and update.</div></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:12px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it a task you're committing to this sprint?</div><div class="dt-answer">(specific, scoped, you're doing it now)</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-planner">Planner</div><div class="dt-answer" style="margin-top:4px">Add to the initiative's Planner board with owner and due date.</div></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:12px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it a task but not committed this sprint?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-todo">To Do</div><div class="dt-answer" style="margin-top:4px">Capture. Review in weekly triage. Elevate to Planner when the time comes.</div></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:12px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it a new initiative that needs tracking?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-lists">Lists + Loop</div><div class="dt-answer" style="margin-top:4px">Add to Lists registry. Create Loop page. Create Planner board when ready to execute.</div></div>
+    </div>
+  </div>
+
+  <div class="decision-tree">
+    <div class="dt-title">🔁 "Is this an initiative or just a task?"</div>
+    <div class="dt-start">You have a new body of work to evaluate</div>
+
+    <div class="dt-node">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Will this take more than 2 weeks to complete?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-no">NO →</span></div>
+      <div><div class="dt-destination dest-todo">To Do or Planner task</div><div class="dt-answer" style="margin-top:4px">Not an initiative. Just do it.</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES ↓</span></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:8px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Does it have a defined outcome or goal?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-no">NO →</span></div>
+      <div><div class="dt-destination dest-loop">Loop scratch page</div><div class="dt-answer" style="margin-top:4px">It's still forming. Keep in Loop as an exploratory page, not an initiative yet.</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES ↓</span></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:8px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Does it require coordination with more than just you?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-lists">Initiative — add to Lists + create Loop page</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-no">NO →</span></div>
+      <div>
+        <div class="dt-destination dest-loop">Personal initiative — Loop page only</div>
+        <div class="dt-answer" style="margin-top:4px">May or may not go into Lists depending on strategic importance.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-tree">
+    <div class="dt-title">📋 "Should this be Planner or Loop?"</div>
+
+    <div class="dt-node">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it executable work — a specific task with a done state?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-planner">Planner</div><div class="dt-answer" style="margin-top:4px">Only if committed this sprint.</div></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:12px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it context, a decision, a rationale, or a status update?</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-loop">Loop</div><div class="dt-answer" style="margin-top:4px">Compressed update to the initiative page.</div></div>
+    </div>
+
+    <div class="dt-node" style="margin-top:12px">
+      <div class="dt-diamond"></div>
+      <div><div class="dt-question">Is it both? (context that spawns tasks)</div></div>
+    </div>
+    <div class="dt-node indent-1">
+      <div class="dt-arrow"><span class="branch-yes">YES →</span></div>
+      <div><div class="dt-destination dest-loop">Loop first, then Planner</div><div class="dt-answer" style="margin-top:4px">Write the context in Loop, then create Planner tasks for the executable next steps.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- WORKFLOWS -->
+<div class="section" id="workflows">
+  <h1>Operational Workflows</h1>
+  <div class="subtitle">Step-by-step flows for the most common RevOps / GTM operational patterns.</div>
+
+  <h2>New Initiative Launch</h2>
+  <div class="workflow">
+    <div class="dt-title">🚀 Spinning Up a New Initiative</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Validate it qualifies as an initiative (use the decision tree)</div>
+          <div class="wf-detail">If no → task in To Do or Planner. If yes → continue.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Add a row to the Lists Initiative Registry</div>
+          <div class="wf-detail">Name, Status=Active, Phase, Owner, Target Date. Leave Loop/Planner links blank for now.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(33,115,70,0.15); color:#66cc99; border:1px solid rgba(33,115,70,0.3);">Lists</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Create the Loop page using the Initiative Template</div>
+          <div class="wf-detail">Fill in: Purpose, Current State, Goal, Stakeholders, Key Decisions (empty), Next Actions, Open Questions. Link SharePoint folder if one exists.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Create a Planner board for the initiative (if execution-ready)</div>
+          <div class="wf-detail">Use buckets: This Sprint / Next Up / Blocked / Done. Only create if you have actual tasks to execute now.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(49,117,47,0.15); color:#66cc66; border:1px solid rgba(49,117,47,0.3);">Planner</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Update Lists row with Loop and Planner links</div>
+          <div class="wf-detail">The registry should always be a reliable index to the full context.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">6</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Optional: use AI to draft the Loop page scaffold</div>
+          <div class="wf-detail">Give Claude the initiative name, your raw notes/context, and ask it to draft the Loop page structure. Review and customize.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Pipeline Review Preparation (GTM Example)</h2>
+  <div class="workflow">
+    <div class="dt-title">📊 Weekly Pipeline Review Prep</div>
+    <div class="wf-steps">
+      <div class="wf-step">
+        <div class="wf-num">1</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Pull pipeline data from CRM (day before review)</div>
+          <div class="wf-detail">Export or screenshot current pipeline by stage, rep, and deal age.</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">2</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Run AI analysis on pipeline data</div>
+          <div class="wf-detail">Paste pipeline snapshot into Claude. Ask: "What are the top 3 risks, top 3 opportunities, and any patterns I should flag for the team meeting?"</div>
+          <div><span class="wf-tool-tag" style="background:rgba(245,165,36,0.15); color:var(--amber); border:1px solid rgba(245,165,36,0.3);">Claude</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">3</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Update Loop page for Pipeline Review initiative</div>
+          <div class="wf-detail">Paste your pre-meeting analysis. Note: deals at risk, stale opportunities, deals moved this week.</div>
+          <div><span class="wf-tool-tag" style="background:rgba(196,62,159,0.15); color:#e066cc; border:1px solid rgba(196,62,159,0.3);">Loop</span></div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">4</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">After review: capture decisions and action items only</div>
+          <div class="wf-detail">Not a transcript. What changed? What's the follow-up? Who owns what?</div>
+        </div>
+      </div>
+      <div class="wf-step">
+        <div class="wf-num">5</div>
+        <div class="wf-line"></div>
+        <div class="wf-content">
+          <div class="wf-action">Route follow-up actions to correct owners</div>
+          <div class="wf-detail">Your tasks → Planner. Others' tasks → communicate via Teams. Update Loop status.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATES -->
+<div class="section" id="templates">
+  <h1>Templates</h1>
+  <div class="subtitle">Copy-paste ready structures for Loop pages, Planner boards, and Lists.</div>
+
+  <h2>Loop Page — Initiative Template</h2>
+  <div class="template-card">
+    <div class="template-header">
+      <div class="template-title">Initiative Loop Page</div>
+      <div class="template-tool">Loop · One page per initiative</div>
+    </div>
+    <div class="template-body">
+      <span class="section-label">Header</span>
+      <span class="field">[INITIATIVE NAME]</span><br>
+      Status: <span class="field">Active</span> · Phase: <span class="field">Discovery</span> · Owner: <span class="field">You</span> · Last Updated: <span class="field">YYYY-MM-DD</span>
+
+      <span class="section-label">Purpose (1–2 sentences)</span>
+      What problem does this initiative solve? What outcome does success look like?
+
+      <span class="section-label">Current State</span>
+      Where things stand right now. Compressed. Updated each week or after meaningful events.
+
+      <span class="section-label">Goal / Definition of Done</span>
+      How will we know this is complete? What does "done" look like?
+
+      <span class="section-label">Key Stakeholders</span>
+      <span class="field">Name</span> — Role / What they need from this initiative
+
+      <span class="section-label">Key Decisions Log</span>
+      <span class="field">YYYY-MM-DD</span> — Decision made. Rationale. _(Keep running; last 3–5 decisions)_
+
+      <span class="section-label">Current Blockers</span>
+      What's stopping progress? Who needs to act?
+
+      <span class="section-label">Next Actions (linked to Planner)</span>
+      - [ ] <span class="field">Task description</span> — Owner — Due date
+
+      <span class="section-label">Open Questions</span>
+      Things that need answers before the initiative can progress.
+
+      <span class="section-label">Resources</span>
+      → <span class="field">SharePoint folder link</span><br>
+      → <span class="field">Related Loop pages</span><br>
+      → <span class="field">Planner board link</span>
+
+      <div class="rule">DO NOT: paste meeting notes, email threads, or raw transcripts here. Only compressed, synthesized, current state.</div>
+    </div>
+  </div>
+
+  <h2>Loop Page — Weekly Review Template</h2>
+  <div class="template-card">
+    <div class="template-header">
+      <div class="template-title">Weekly Review Loop Page</div>
+      <div class="template-tool">Loop · Persistent weekly review page (update each week)</div>
+    </div>
+    <div class="template-body">
+      <span class="section-label">Week of</span>
+      <span class="field">YYYY-MM-DD</span>
+
+      <span class="section-label">Initiative Status Snapshot</span>
+      For each active initiative: one line — name, status, what changed this week.
+
+      <span class="section-label">What moved forward</span>
+      Top 3 things that actually progressed. Evidence of momentum.
+
+      <span class="section-label">What got stuck</span>
+      Blockers that persisted. Need a decision or escalation?
+
+      <span class="section-label">Decisions made this week</span>
+      Any significant decisions — even small ones — worth recording.
+
+      <span class="section-label">Priority next week</span>
+      Top 3–5 things that matter most. These should align with Planner next sprint.
+
+      <span class="section-label">System hygiene checks</span>
+      - To Do: anything stale to archive or elevate?<br>
+      - Planner: tasks that should be closed or moved?<br>
+      - Lists: any initiative status changes?<br>
+      - Loop: any pages that need updating?
+    </div>
+  </div>
+
+  <h2>Planner Board Structure</h2>
+  <div class="template-card">
+    <div class="template-header">
+      <div class="template-title">Planner Board — Per Initiative</div>
+      <div class="template-tool">Planner · One board per major initiative</div>
+    </div>
+    <div class="template-body">
+      <span class="section-label">Buckets (columns)</span>
+      <span class="field">🏃 This Sprint</span> — Committed work for the current sprint<br>
+      <span class="field">📋 Next Up</span> — Staged, scoped tasks ready to pull in<br>
+      <span class="field">🚫 Blocked</span> — Active tasks waiting on something external<br>
+      <span class="field">✅ Done</span> — Completed this sprint (archive after sprint close)
+
+      <span class="section-label">Task Card Fields (use consistently)</span>
+      Title — Specific, action-oriented (verb + noun)<br>
+      Assigned To — One owner<br>
+      Due Date — Real due date, not aspirational<br>
+      Labels — Use for workstream (e.g., CRM, Enablement, Analytics)<br>
+      Notes — Link to Loop page or relevant context if needed
+
+      <div class="rule">Sprint hygiene rule: at sprint start, "Next Up" should have 2–3 items max. At sprint end, archive Done bucket. If a task stays in "This Sprint" for 2 sprints, it's a planning problem.</div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKLY REVIEW -->
+<div class="section" id="weekly">
+  <h1>Weekly Review System</h1>
+  <div class="subtitle">A sustainable rhythm to maintain system integrity without turning it into a second job.</div>
+
+  <div class="warn-box">
+    <strong>The weekly review is not a meeting with yourself.</strong> It's a 30–45 minute system maintenance pass. Its job is to close loops, update context, and set priorities — not to plan from scratch.
+  </div>
+
+  <h2>The Weekly Review Rhythm</h2>
+  <div class="review-grid">
+    <div class="review-block">
+      <div class="review-time">Monday AM · 15 min</div>
+      <div class="review-name">Sprint Set</div>
+      <ul class="review-items">
+        <li>Open Planner — what's in "This Sprint" from last week?</li>
+        <li>Move incomplete items: keep, defer, or drop</li>
+        <li>Pull 3–5 items from "Next Up" into "This Sprint"</li>
+        <li>Open Lists — any initiative status changes needed?</li>
+        <li>Set your top 3 priorities for the week in To Do</li>
+      </ul>
+    </div>
+
+    <div class="review-block">
+      <div class="review-time">Wednesday · 10 min</div>
+      <div class="review-name">Midweek Pulse</div>
+      <ul class="review-items">
+        <li>Check Planner "Blocked" bucket — can anything be unblocked?</li>
+        <li>Scan To Do for items that should be promoted to Planner</li>
+        <li>Any Loop pages that need a quick update based on meetings this week?</li>
+        <li>Quick: am I on track for the week's top 3?</li>
+      </ul>
+    </div>
+
+    <div class="review-block">
+      <div class="review-time">Friday · 20 min</div>
+      <div class="review-name">Week Close</div>
+      <ul class="review-items">
+        <li>Archive Done tasks in all Planner boards</li>
+        <li>Update the Weekly Review Loop page (what moved, what didn't)</li>
+        <li>Check Lists — update any initiative statuses</li>
+        <li>Scan To Do — anything stale to archive?</li>
+        <li>Flag 3 priorities for Monday's sprint set</li>
+      </ul>
+    </div>
+
+    <div class="review-block">
+      <div class="review-time">Monthly · 30 min</div>
+      <div class="review-name">System Audit</div>
+      <ul class="review-items">
+        <li>Review all initiatives in Lists — any to close, pause, or re-scope?</li>
+        <li>Review all Loop pages — any stale or outdated pages to archive?</li>
+        <li>Planner boards: any boards for closed initiatives still active?</li>
+        <li>To Do: clear out anything older than 30 days</li>
+        <li>Ask: is the system still serving me, or am I serving the system?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="info-box" style="margin-top: 24px;">
+    <strong>Anti-patterns to watch for:</strong> Planner tasks that never move → planning problem, not execution problem. Loop pages that never get updated → initiative is probably stale. To Do list growing constantly → intake is too broad, review the filter. Lists with 20+ active initiatives → you're overcommitted.
+  </div>
+</div>
+
+<!-- AI LAYER -->
+<div class="section" id="ai">
+  <h1>AI-Assisted Workflows</h1>
+  <div class="subtitle">Claude and ChatGPT as cognitive processing tools — not autonomous agents.</div>
+
+  <div class="warn-box">
+    <strong>Principle:</strong> AI processes and proposes. You decide and act. AI helps you think more clearly — it doesn't replace your judgment or auto-populate your system.
+  </div>
+
+  <h2>When to Use AI in This System</h2>
+  <div class="intake-matrix">
+    <div class="matrix-header">
+      <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase;">Situation</div>
+      <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase;">AI Task</div>
+      <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase;">Your Role</div>
+      <div class="matrix-cell" style="color: var(--text3); font-size: 10px; text-transform: uppercase;">Output goes to</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Complex meeting with lots of outputs</div>
+      <div class="matrix-cell">Synthesize raw notes into compressed Loop update</div>
+      <div class="matrix-cell">Review, edit, approve</div>
+      <div class="matrix-cell">Loop page update</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">New initiative, fuzzy scope</div>
+      <div class="matrix-cell">Draft Loop page structure from brain dump</div>
+      <div class="matrix-cell">Review and customize sections</div>
+      <div class="matrix-cell">Loop initiative page</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Weekly review feels overwhelming</div>
+      <div class="matrix-cell">Surface risks, priorities, and stale initiatives</div>
+      <div class="matrix-cell">Decide what to act on</div>
+      <div class="matrix-cell">Weekly review page</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Pipeline data needs analysis</div>
+      <div class="matrix-cell">Identify patterns, risks, and talking points</div>
+      <div class="matrix-cell">Validate, add context</div>
+      <div class="matrix-cell">Pipeline review Loop page</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Context recovery needed</div>
+      <div class="matrix-cell">Reconstruct current state from Loop page</div>
+      <div class="matrix-cell">Confirm accuracy</div>
+      <div class="matrix-cell">Your working memory</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Stakeholder comms needed</div>
+      <div class="matrix-cell">Draft email/update from Loop page context</div>
+      <div class="matrix-cell">Edit, personalize, send</div>
+      <div class="matrix-cell">Outlook / Teams</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Inbox overload</div>
+      <div class="matrix-cell">Triage and prioritize emails by initiative</div>
+      <div class="matrix-cell">Confirm routing decisions</div>
+      <div class="matrix-cell">To Do / Planner / Loop</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Decision feels stuck</div>
+      <div class="matrix-cell">Map options, tradeoffs, and recommendation</div>
+      <div class="matrix-cell">Make the call</div>
+      <div class="matrix-cell">Loop decisions log</div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-cell">Sprint planning unclear</div>
+      <div class="matrix-cell">Suggest sprint tasks from Loop page next actions</div>
+      <div class="matrix-cell">Confirm and commit to Planner</div>
+      <div class="matrix-cell">Planner board</div>
+    </div>
+  </div>
+
+  <h2>Prompt Library</h2>
+  <p style="color: var(--text2); font-size: 12px; margin-bottom: 24px;">Click <strong style="color:var(--green);">Copy Prompt</strong> on any card. Paste directly into Claude or ChatGPT, then fill in the bracketed placeholders.</p>
+
+  <!-- FILTER TABS -->
+  <div class="prompt-filter" id="promptFilter">
+    <button class="pf-btn active" onclick="filterPrompts('all', this)">All</button>
+    <button class="pf-btn" onclick="filterPrompts('meeting', this)">Meetings</button>
+    <button class="pf-btn" onclick="filterPrompts('initiative', this)">Initiatives</button>
+    <button class="pf-btn" onclick="filterPrompts('review', this)">Review</button>
+    <button class="pf-btn" onclick="filterPrompts('pipeline', this)">Pipeline</button>
+    <button class="pf-btn" onclick="filterPrompts('comms', this)">Comms</button>
+    <button class="pf-btn" onclick="filterPrompts('planning', this)">Planning</button>
+  </div>
+
+  <div id="promptLibrary">
+
+    <!-- 1. MEETING COMPRESSION -->
+    <div class="prompt-card" data-category="meeting">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Meeting Compression</div>
+          <div class="prompt-meta">Post-meeting · Loop update · ~2 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-meeting">Meeting</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You've just come out of a meeting and need to update your Loop page without writing a wall of raw notes.</div>
+      <div class="prompt-body" data-prompt="I'm a GTM/RevOps operator and I need help processing a meeting.
+
+MEETING TYPE: [e.g. pipeline review / stakeholder sync / initiative kickoff]
+INITIATIVE: [initiative name]
+DATE: [today's date]
+
+RAW NOTES:
+[paste your notes here]
+
+CURRENT LOOP PAGE STATUS:
+[paste the current 'Current State' section from your Loop page — or write 'none yet']
+
+Please do the following:
+1. Identify the 2–3 most important things that changed, were decided, or were surfaced in this meeting.
+2. List any clear action items with owner names if mentioned.
+3. Flag any blockers or risks that emerged.
+4. Write a compressed 4–5 line 'Current State' update I can paste directly into my Loop page. Use plain language, past tense for decisions, present tense for status.
+
+Keep it tight. No preamble. No bullet padding. Only what actually matters.">I'm a GTM/RevOps operator and I need help processing a meeting.
+
+<span class="ph">MEETING TYPE:</span> [e.g. pipeline review / stakeholder sync / initiative kickoff]
+<span class="ph">INITIATIVE:</span> [initiative name]
+<span class="ph">DATE:</span> [today's date]
+
+<span class="ph">RAW NOTES:</span>
+[paste your notes here]
+
+<span class="ph">CURRENT LOOP PAGE STATUS:</span>
+[paste the 'Current State' from your Loop page — or write 'none yet']
+
+Please do the following:
+1. Identify the 2–3 most important things that changed, were decided, or were surfaced.
+2. List any clear action items with owner names if mentioned.
+3. Flag any blockers or risks that emerged.
+4. Write a compressed 4–5 line 'Current State' update I can paste directly into my Loop page. Use plain language, past tense for decisions, present tense for status.
+
+Keep it tight. No preamble. No bullet padding. Only what actually matters.</div>
+    </div>
+
+    <!-- 2. INITIATIVE SCOPING -->
+    <div class="prompt-card" data-category="initiative">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Initiative Scoping & Loop Page Draft</div>
+          <div class="prompt-meta">New initiative · Loop page creation · ~3 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-initiative">Initiative</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You've identified a new initiative and need to set it up properly — especially when the scope is still fuzzy.</div>
+      <div class="prompt-body" data-prompt="I'm setting up a new initiative in my GTM/RevOps operating system and need help structuring it.
+
+INITIATIVE NAME: [name]
+CONTEXT / BRAIN DUMP:
+[write everything you know — messy is fine: goals, who's involved, what triggered this, what success looks like, any constraints]
+
+Please produce a structured Loop page draft with these exact sections:
+- PURPOSE (1 sentence): What problem does this solve and for whom?
+- GOAL / DEFINITION OF DONE: How will we know this is complete?
+- CURRENT STATE: Where things stand right now.
+- KEY STAKEHOLDERS: Who is involved and what they need from this.
+- OPEN QUESTIONS: Things I need to answer before real progress can happen.
+- RECOMMENDED NEXT ACTIONS (3–5): Specific, actionable steps to start moving.
+- RISKS / WATCH-OUTS: Anything I may not have fully thought through.
+
+After the draft, give me a 1-sentence 'Next Milestone' I can enter into my Lists initiative registry.
+
+Be direct. Flag any part of my brain dump that looks unclear, contradictory, or underspecified.">I'm setting up a new initiative in my GTM/RevOps operating system.
+
+<span class="ph">INITIATIVE NAME:</span> [name]
+<span class="ph">CONTEXT / BRAIN DUMP:</span>
+[write everything you know — messy is fine: goals, who's involved, what triggered this, what success looks like, constraints]
+
+Please produce a structured Loop page draft with these exact sections:
+— PURPOSE (1 sentence): What problem does this solve and for whom?
+— GOAL / DEFINITION OF DONE: How will we know this is complete?
+— CURRENT STATE: Where things stand right now.
+— KEY STAKEHOLDERS: Who is involved and what they need.
+— OPEN QUESTIONS: Things I need to answer before real progress.
+— RECOMMENDED NEXT ACTIONS (3–5): Specific, actionable steps to start.
+— RISKS / WATCH-OUTS: Anything I may not have fully thought through.
+
+After the draft, give me a 1-sentence 'Next Milestone' I can enter into my Lists initiative registry.
+
+Be direct. Flag anything in my brain dump that looks unclear, contradictory, or underspecified.</div>
+    </div>
+
+    <!-- 3. INITIATIVE HEALTH CHECK -->
+    <div class="prompt-card" data-category="initiative">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Initiative Health Check</div>
+          <div class="prompt-meta">Stuck initiative · Diagnosis · ~2 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-initiative">Initiative</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: An initiative feels stuck, stalled, or unclear — and you can't tell if it's a planning problem, an execution problem, or a prioritization problem.</div>
+      <div class="prompt-body" data-prompt="I need help diagnosing a stalled initiative in my RevOps/GTM system.
+
+INITIATIVE NAME: [name]
+CURRENT LOOP PAGE:
+[paste full Loop page content]
+
+WHAT FEELS STUCK:
+[describe in a few sentences what's not moving and why you think that is]
+
+Please:
+1. Diagnose what type of problem this is: planning gap, execution gap, stakeholder gap, prioritization gap, or unclear goal.
+2. Identify the single most important thing blocking progress right now.
+3. Recommend 1–2 concrete actions I can take in the next 5 business days to unblock it.
+4. Tell me if this initiative should be: kept active as-is / re-scoped / put on hold / closed.
+
+Be honest and direct. If the Loop page reveals a fundamental clarity problem, say so.">I need help diagnosing a stalled initiative in my RevOps/GTM system.
+
+<span class="ph">INITIATIVE NAME:</span> [name]
+<span class="ph">CURRENT LOOP PAGE:</span>
+[paste full Loop page content]
+
+<span class="ph">WHAT FEELS STUCK:</span>
+[describe in a few sentences what's not moving and why you think that is]
+
+Please:
+1. Diagnose the problem type: planning gap / execution gap / stakeholder gap / prioritization gap / unclear goal.
+2. Identify the single most important thing blocking progress right now.
+3. Recommend 1–2 concrete actions I can take in the next 5 business days to unblock it.
+4. Tell me if this initiative should be: kept active / re-scoped / put on hold / closed.
+
+Be honest and direct. If the Loop page reveals a fundamental clarity problem, say so.</div>
+    </div>
+
+    <!-- 4. CONTEXT RECOVERY -->
+    <div class="prompt-card" data-category="initiative">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Context Recovery</div>
+          <div class="prompt-meta">Returning to initiative · Quick reactivation · ~1 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-initiative">Initiative</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You haven't touched an initiative in a while and need to get back up to speed fast before a meeting or decision.</div>
+      <div class="prompt-body" data-prompt="I'm a GTM/RevOps operator picking up an initiative after some time away. Help me reactivate quickly.
+
+INITIATIVE: [name]
+TIME AWAY: [X days / weeks]
+LOOP PAGE:
+[paste full Loop page]
+
+Please:
+1. Give me a 3-sentence 'where things stand' summary — as if briefing me cold.
+2. What is the single most important next action based on what's written?
+3. What are the 2–3 questions I should be asking right now to move this forward?
+4. Is there anything in the Loop page that looks outdated, contradictory, or that I should verify before acting?
+
+Be concise. I need to be operational in under 5 minutes.">I'm a GTM/RevOps operator picking up an initiative after some time away.
+
+<span class="ph">INITIATIVE:</span> [name]
+<span class="ph">TIME AWAY:</span> [X days / weeks]
+<span class="ph">LOOP PAGE:</span>
+[paste full Loop page]
+
+Please:
+1. Give me a 3-sentence 'where things stand' summary — as if briefing me cold.
+2. What is the single most important next action based on what's written?
+3. What are the 2–3 questions I should be asking right now to move this forward?
+4. Is there anything in the Loop page that looks outdated, contradictory, or that I should verify before acting?
+
+Be concise. I need to be operational in under 5 minutes.</div>
+    </div>
+
+    <!-- 5. WEEKLY REVIEW -->
+    <div class="prompt-card" data-category="review">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Weekly Review Assist</div>
+          <div class="prompt-meta">Friday review · System hygiene · ~5 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-review">Review</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: Doing your Friday week-close or Monday sprint-set and want AI to help surface what matters and what's drifting.</div>
+      <div class="prompt-body" data-prompt="I'm doing my weekly GTM/RevOps operating system review and need help processing the state of my initiatives.
+
+TODAY'S DATE: [date]
+
+INITIATIVE LIST (from Microsoft Lists):
+[paste: Initiative Name | Status | Phase | Last Updated | Next Milestone]
+
+WHAT HAPPENED THIS WEEK (brief):
+[3–5 bullet points on what moved, what got stuck, what was decided]
+
+WHAT I'M FEELING BEHIND ON:
+[optional — list anything that's nagging at you]
+
+Please:
+1. Flag any initiatives that look stale, at-risk, or out of sync based on last updated dates or status.
+2. Identify any initiatives that might be candidates to close, pause, or descope — and say why.
+3. Suggest my top 3 priority initiatives for next week with a one-line reason for each.
+4. Identify any systemic issues (e.g. too many active initiatives, recurring blocks, unclear ownership).
+5. Give me a 5-line 'State of the System' summary I can paste into my Weekly Review Loop page.
+
+Be direct. Don't just validate what I said — push back if something looks like a problem I'm avoiding.">I'm doing my weekly GTM/RevOps operating system review.
+
+<span class="ph">TODAY'S DATE:</span> [date]
+
+<span class="ph">INITIATIVE LIST (from Microsoft Lists):</span>
+[paste: Initiative Name | Status | Phase | Last Updated | Next Milestone]
+
+<span class="ph">WHAT HAPPENED THIS WEEK:</span>
+[3–5 bullets on what moved, what got stuck, what was decided]
+
+<span class="ph">WHAT I'M FEELING BEHIND ON:</span>
+[optional — anything nagging at you]
+
+Please:
+1. Flag any initiatives that look stale, at-risk, or out of sync.
+2. Identify candidates to close, pause, or descope — with reasons.
+3. Suggest my top 3 priority initiatives for next week with a one-line reason each.
+4. Identify any systemic issues (too many actives, recurring blocks, unclear ownership).
+5. Give me a 5-line 'State of the System' summary I can paste into my Weekly Review Loop page.
+
+Be direct. Don't just validate — push back if something looks like a problem I'm avoiding.</div>
+    </div>
+
+    <!-- 6. SPRINT PLANNING -->
+    <div class="prompt-card" data-category="planning">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Sprint Planning from Loop Pages</div>
+          <div class="prompt-meta">Monday sprint-set · Planner tasks · ~3 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-planning">Planning</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: It's Monday and you need to translate your Loop pages' next actions into a committed, realistic Planner sprint — without over-committing.</div>
+      <div class="prompt-body" data-prompt="I'm building my Planner sprint for the week ahead in my GTM/RevOps operating system.
+
+WEEK OF: [date]
+AVAILABLE FOCUS HOURS THIS WEEK (approx): [e.g. 15 hours — account for meetings, admin]
+
+ACTIVE INITIATIVES AND THEIR NEXT ACTIONS:
+[For each initiative, paste: Initiative name + the 'Next Actions' section from its Loop page]
+
+CARRY-OVER TASKS FROM LAST WEEK (incomplete):
+[list any tasks that didn't get done]
+
+TOP CONSTRAINTS THIS WEEK:
+[e.g. big presentation Thursday, two days of travel, etc.]
+
+Please:
+1. Recommend which initiatives deserve sprint focus this week and which should be deferred.
+2. Suggest a realistic set of 5–8 Planner tasks for 'This Sprint' — specific, scoped, completable.
+3. Flag any tasks that are too vague to be Planner-ready (they need more definition first).
+4. Identify 2–3 tasks for 'Next Up' (staged but not this sprint).
+5. Call out anything that looks like over-commitment.
+
+Format each task as: [Initiative] — [Task description] — [Estimated time]">I'm building my Planner sprint for the week ahead in my GTM/RevOps system.
+
+<span class="ph">WEEK OF:</span> [date]
+<span class="ph">AVAILABLE FOCUS HOURS THIS WEEK:</span> [e.g. 15 hrs — subtract meetings and admin]
+
+<span class="ph">ACTIVE INITIATIVES AND NEXT ACTIONS:</span>
+[For each: Initiative name + the 'Next Actions' section from its Loop page]
+
+<span class="ph">CARRY-OVER FROM LAST WEEK:</span>
+[list incomplete tasks]
+
+<span class="ph">TOP CONSTRAINTS THIS WEEK:</span>
+[e.g. big presentation Thursday, travel, etc.]
+
+Please:
+1. Recommend which initiatives deserve sprint focus and which to defer.
+2. Suggest 5–8 Planner tasks for 'This Sprint' — specific, scoped, completable.
+3. Flag any tasks too vague to be Planner-ready.
+4. Identify 2–3 tasks for 'Next Up'.
+5. Call out any over-commitment.
+
+Format each task as: [Initiative] — [Task description] — [Estimated time]</div>
+    </div>
+
+    <!-- 7. PIPELINE REVIEW PREP -->
+    <div class="prompt-card" data-category="pipeline">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Pipeline Review Prep</div>
+          <div class="prompt-meta">Pre-meeting · GTM analysis · ~3 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-pipeline">Pipeline</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You're preparing for a pipeline review meeting and want to show up with sharp analysis, not just a CRM screenshot.</div>
+      <div class="prompt-body" data-prompt="I'm preparing for a GTM pipeline review meeting and need to surface the right insights.
+
+REVIEW DATE: [date]
+TEAM / REGION: [if applicable]
+
+PIPELINE SNAPSHOT:
+[paste your pipeline data — deal names, stage, ARR, close date, days in stage, rep name, or whatever you have]
+
+CONTEXT FROM LAST REVIEW:
+[paste the relevant section from your Loop page, or note 'first review']
+
+Please:
+1. Identify the top 3 deals most at risk and why (stage age, close date, missing info).
+2. Identify the top 3 deals with the best momentum or upside.
+3. Surface any pipeline patterns worth flagging (e.g. stage clustering, rep-specific trends, velocity issues).
+4. List 3–5 sharp questions I should ask in the review meeting.
+5. Draft a 4-line pre-meeting brief I can add to my Loop page before the meeting.
+
+Be specific — reference deal names or rep names from the data I provided.">I'm preparing for a GTM pipeline review meeting.
+
+<span class="ph">REVIEW DATE:</span> [date]
+<span class="ph">TEAM / REGION:</span> [if applicable]
+
+<span class="ph">PIPELINE SNAPSHOT:</span>
+[paste pipeline data — deal name, stage, ARR, close date, days in stage, rep]
+
+<span class="ph">CONTEXT FROM LAST REVIEW:</span>
+[paste relevant Loop page section, or 'first review']
+
+Please:
+1. Identify the top 3 deals most at risk and why.
+2. Identify the top 3 deals with the best momentum or upside.
+3. Surface any pipeline patterns worth flagging (velocity, stage clustering, rep trends).
+4. List 3–5 sharp questions I should ask in the review.
+5. Draft a 4-line pre-meeting brief I can add to my Loop page.
+
+Be specific — reference deal names and rep names from the data I provided.</div>
+    </div>
+
+    <!-- 8. STAKEHOLDER UPDATE EMAIL -->
+    <div class="prompt-card" data-category="comms">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Stakeholder Update Email</div>
+          <div class="prompt-meta">Async comms · Outlook · ~2 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-comms">Comms</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You need to communicate initiative status to a stakeholder and want to write something sharp, not a wall of text.</div>
+      <div class="prompt-body" data-prompt="I need to write a stakeholder update email about an initiative in my GTM/RevOps system.
+
+INITIATIVE: [name]
+RECIPIENT: [name, role, relationship — e.g. 'VP of Sales, my main internal sponsor']
+PURPOSE OF THIS EMAIL: [e.g. routine update / escalation / request for decision / re-engagement]
+
+CURRENT LOOP PAGE SUMMARY:
+[paste Current State + Key Decisions + Next Actions sections]
+
+TONE NEEDED: [e.g. confident and concise / collaborative / urgent / matter-of-fact]
+
+Please draft:
+1. A subject line
+2. An email body (under 200 words) that covers: where we are, what just happened or was decided, what's needed from them (if anything), and next steps.
+
+Then give me an alternative version that's 30% shorter — for cases where they're busy or mobile.
+
+Do not use bullet points unless it genuinely helps readability. Write like a competent operator, not a consultant.">I need to write a stakeholder update email about a GTM/RevOps initiative.
+
+<span class="ph">INITIATIVE:</span> [name]
+<span class="ph">RECIPIENT:</span> [name, role — e.g. 'VP of Sales, my main internal sponsor']
+<span class="ph">PURPOSE:</span> [routine update / escalation / request for decision / re-engagement]
+
+<span class="ph">CURRENT LOOP PAGE SUMMARY:</span>
+[paste Current State + Key Decisions + Next Actions sections]
+
+<span class="ph">TONE:</span> [e.g. confident and concise / collaborative / urgent / matter-of-fact]
+
+Please draft:
+1. A subject line
+2. An email body (under 200 words): where we are, what just happened, what's needed from them, next steps.
+
+Then give me an alternative version that's 30% shorter for when they're busy or on mobile.
+
+Write like a competent operator, not a consultant. No bullet padding.</div>
+    </div>
+
+    <!-- 9. INBOX TRIAGE -->
+    <div class="prompt-card" data-category="meeting">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Inbox Triage Assist</div>
+          <div class="prompt-meta">Email overload · Routing · ~2 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-meeting">Meeting</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: Your inbox has piled up and you need to triage quickly without making bad routing decisions under pressure.</div>
+      <div class="prompt-body" data-prompt="I need help triaging my email inbox as part of my GTM/RevOps operating system.
+
+MY ACTIVE INITIATIVES (from Microsoft Lists):
+[list initiative names and one-line descriptions]
+
+EMAILS TO TRIAGE:
+[paste email subjects + sender + 1-line summary for each, or paste full email threads]
+
+For each email, tell me:
+1. ROUTE: No action needed / Do it now (under 5 min) / To Do / Planner / Loop update
+2. INITIATIVE: Which initiative does this connect to (if any)?
+3. PRIORITY: High / Medium / Low
+4. ACTION: One-line description of what to do
+
+Format as a simple table: Email | Route | Initiative | Priority | Action
+
+Flag anything that looks like it needs a decision from me before it can be routed. Do not over-assign — most emails should be 'no action' or 'do it now.'">I need help triaging my email inbox in my GTM/RevOps operating system.
+
+<span class="ph">MY ACTIVE INITIATIVES:</span>
+[list initiative names + one-line descriptions]
+
+<span class="ph">EMAILS TO TRIAGE:</span>
+[paste email subjects + sender + 1-line summary each, or paste full threads]
+
+For each email, tell me:
+1. ROUTE: No action / Do it now / To Do / Planner / Loop update
+2. INITIATIVE: Which initiative does this connect to (if any)?
+3. PRIORITY: High / Medium / Low
+4. ACTION: One-line description of what to do
+
+Format as a simple table: Email | Route | Initiative | Priority | Action
+
+Flag anything needing a decision before it can be routed. Don't over-assign — most should be 'no action' or 'do it now.'</div>
+    </div>
+
+    <!-- 10. DECISION LOG ENTRY -->
+    <div class="prompt-card" data-category="initiative">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Decision Analysis & Log Entry</div>
+          <div class="prompt-meta">Stuck decision · Loop decisions log · ~3 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-initiative">Initiative</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You're sitting on a decision and need to think it through clearly before committing — or need to document a decision that was just made.</div>
+      <div class="prompt-body" data-prompt="I need help thinking through (or documenting) a decision for an initiative in my GTM/RevOps system.
+
+INITIATIVE: [name]
+DECISION TO MAKE OR DOCUMENT: [describe the decision]
+CONTEXT: [what led to this decision point, what's at stake]
+OPTIONS BEING CONSIDERED:
+- Option A: [describe]
+- Option B: [describe]
+- Option C (if applicable): [describe]
+CONSTRAINTS: [time, budget, people, politics, dependencies]
+DECISION MAKER: [you / you + others / waiting on someone]
+
+If this is a PENDING decision, please:
+1. Map the key tradeoffs between options.
+2. Identify what information is missing before a good decision can be made.
+3. Give me a recommended option with a clear reason.
+4. Write a 1-line decision statement I can add to my Loop page once I decide.
+
+If this is an ALREADY MADE decision, please:
+1. Write a clean 2-sentence decision log entry: [Date] — [What was decided] — [Why].
+2. Identify any follow-on actions this decision creates.">I need help thinking through a decision for a GTM/RevOps initiative.
+
+<span class="ph">INITIATIVE:</span> [name]
+<span class="ph">DECISION:</span> [describe the decision]
+<span class="ph">CONTEXT:</span> [what led to this, what's at stake]
+<span class="ph">OPTIONS:</span>
+— Option A: [describe]
+— Option B: [describe]
+— Option C (if applicable): [describe]
+<span class="ph">CONSTRAINTS:</span> [time, budget, people, dependencies]
+<span class="ph">DECISION MAKER:</span> [you / you + others / waiting on someone]
+
+If PENDING decision:
+1. Map the key tradeoffs.
+2. Identify what information is missing.
+3. Give a recommended option with reason.
+4. Write a 1-line decision statement for my Loop page.
+
+If ALREADY MADE:
+1. Write a clean 2-sentence log entry: [Date] — [What was decided] — [Why].
+2. Identify follow-on actions this decision creates.</div>
+    </div>
+
+    <!-- 11. REVOPS PROCESS DESIGN -->
+    <div class="prompt-card" data-category="pipeline">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">RevOps Process Design</div>
+          <div class="prompt-meta">Process improvement · GTM operations · ~5 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-pipeline">Pipeline</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: You're designing or redesigning a RevOps process (lead routing, pipeline stages, onboarding, territory planning, comp design) and need structured thinking.</div>
+      <div class="prompt-body" data-prompt="I'm a RevOps/GTM operator and I need help designing (or redesigning) a process.
+
+PROCESS: [e.g. lead routing / pipeline stage definition / sales onboarding / territory planning / forecast methodology]
+CURRENT STATE: [describe how it works now — or 'greenfield' if starting fresh]
+WHAT'S BROKEN OR MISSING: [what problem are you trying to solve?]
+SCALE: [e.g. team size, deal volume, complexity level]
+TOOLS IN STACK: [CRM, engagement platform, BI tool, etc.]
+CONSTRAINTS: [what can't change — tech, budget, org structure]
+
+Please:
+1. Identify the 2–3 root causes of the current problem (don't just treat symptoms).
+2. Propose a process design with clear stages, decision rules, and handoff points.
+3. List the 3–5 most important implementation steps in sequence.
+4. Flag common failure modes for this type of process and how to avoid them.
+5. Give me a 'Definition of Done' for this process improvement — how will I know it's working?
+
+Think like a senior RevOps architect, not a project manager. Prioritize operational clarity over comprehensiveness.">I'm a RevOps/GTM operator designing (or redesigning) a process.
+
+<span class="ph">PROCESS:</span> [e.g. lead routing / pipeline stages / sales onboarding / territory planning]
+<span class="ph">CURRENT STATE:</span> [how it works now — or 'greenfield']
+<span class="ph">WHAT'S BROKEN:</span> [the problem you're solving]
+<span class="ph">SCALE:</span> [team size, deal volume, complexity]
+<span class="ph">TOOLS IN STACK:</span> [CRM, engagement platform, BI, etc.]
+<span class="ph">CONSTRAINTS:</span> [what can't change]
+
+Please:
+1. Identify the 2–3 root causes (don't just treat symptoms).
+2. Propose a process design with clear stages, decision rules, and handoff points.
+3. List the 3–5 most important implementation steps in sequence.
+4. Flag common failure modes and how to avoid them.
+5. Give me a 'Definition of Done' — how will I know it's working?
+
+Think like a senior RevOps architect. Prioritize operational clarity over comprehensiveness.</div>
+    </div>
+
+    <!-- 12. INITIATIVE CLOSE-OUT -->
+    <div class="prompt-card" data-category="review">
+      <div class="prompt-card-header">
+        <div>
+          <div class="prompt-title">Initiative Close-Out & Retrospective</div>
+          <div class="prompt-meta">Closing initiative · Loop archive · ~3 min</div>
+        </div>
+        <div class="prompt-actions">
+          <span class="prompt-tag tag-review">Review</span>
+          <button class="copy-btn" onclick="copyPrompt(this)">Copy Prompt</button>
+        </div>
+      </div>
+      <div class="prompt-when">Use when: An initiative is completing and you want to close it cleanly, capture what you learned, and archive the Loop page properly.</div>
+      <div class="prompt-body" data-prompt="I'm closing out a completed initiative in my GTM/RevOps operating system and need to archive it properly.
+
+INITIATIVE: [name]
+DURATION: [start date to end date]
+ORIGINAL GOAL: [what you set out to do]
+
+FINAL LOOP PAGE:
+[paste the full Loop page]
+
+WHAT ACTUALLY HAPPENED: [brief honest summary — did you hit the goal? what changed?]
+
+Please:
+1. Write a 3-sentence 'Outcome Summary' I can add to the top of the Loop page before archiving.
+2. Identify 2–3 lessons learned that are worth capturing for future similar initiatives.
+3. Flag any loose ends or follow-on work that should become a new initiative or task.
+4. Suggest a one-line entry for my Lists registry to mark this as closed: [Date Closed] — [Outcome in one line].
+5. Tell me if anything from this initiative should become a standing process or playbook.">I'm closing out a completed initiative in my GTM/RevOps system.
+
+<span class="ph">INITIATIVE:</span> [name]
+<span class="ph">DURATION:</span> [start to end date]
+<span class="ph">ORIGINAL GOAL:</span> [what you set out to do]
+
+<span class="ph">FINAL LOOP PAGE:</span>
+[paste full Loop page]
+
+<span class="ph">WHAT ACTUALLY HAPPENED:</span> [honest summary — did you hit the goal? what changed?]
+
+Please:
+1. Write a 3-sentence 'Outcome Summary' to add to the top of the Loop page before archiving.
+2. Identify 2–3 lessons learned worth capturing for future similar initiatives.
+3. Flag any loose ends that should become a new initiative or task.
+4. Suggest a one-line closed entry for my Lists registry: [Date Closed] — [Outcome].
+5. Tell me if anything should become a standing process or playbook.</div>
+    </div>
+
+  </div><!-- end promptLibrary -->
+</div>
+
+<style>
+  /* PROMPT FILTER */
+  .prompt-filter {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .pf-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .pf-btn:hover { border-color: var(--accent); color: var(--text); }
+  .pf-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* PROMPT CARDS */
+  .prompt-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .prompt-card:hover { border-color: var(--border2); }
+  .prompt-card.hidden { display: none; }
+
+  .prompt-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    gap: 12px;
+  }
+
+  .prompt-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .prompt-meta {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .prompt-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .prompt-tag {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 3px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .tag-meeting { background: rgba(98,100,167,0.2); color: #9b9de0; border: 1px solid rgba(98,100,167,0.3); }
+  .tag-initiative { background: rgba(196,62,159,0.15); color: #e066cc; border: 1px solid rgba(196,62,159,0.3); }
+  .tag-review { background: rgba(61,214,140,0.1); color: #3dd68c; border: 1px solid rgba(61,214,140,0.2); }
+  .tag-pipeline { background: rgba(79,124,255,0.15); color: #7da5ff; border: 1px solid rgba(79,124,255,0.3); }
+  .tag-comms { background: rgba(3,131,135,0.15); color: #66cccc; border: 1px solid rgba(3,131,135,0.3); }
+  .tag-planning { background: rgba(245,165,36,0.12); color: var(--amber); border: 1px solid rgba(245,165,36,0.25); }
+
+  .copy-btn {
+    padding: 6px 14px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .copy-btn.copied { background: var(--green); border-color: var(--green); color: #0d1a12; }
+
+  .prompt-when {
+    padding: 0 20px 12px;
+    font-size: 11px;
+    color: var(--text3);
+    font-style: italic;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+  }
+
+  .prompt-body {
+    padding: 18px 20px;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+    white-space: pre-wrap;
+    background: var(--bg);
+    border-radius: 0 0 10px 10px;
+  }
+
+  .prompt-body .ph {
+    color: var(--accent);
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function copyPrompt(btn) {
+    const card = btn.closest('.prompt-card');
+    const promptBody = card.querySelector('.prompt-body');
+    const text = promptBody.getAttribute('data-prompt');
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Prompt';
+        btn.classList.remove('copied');
+      }, 2000);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = '✓ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy Prompt';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
+  function filterPrompts(category, btn) {
+    document.querySelectorAll('.pf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.prompt-card').forEach(card => {
+      if (category === 'all' || card.dataset.category === category) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  }
+</script>
+</body>
+</html>
