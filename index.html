@@ -81,6 +81,14 @@
   body.light .lc-stage::after { color: var(--text3); }
   body.light .tool-card-sm:hover { background: var(--surface2); }
   body.light .fc-diamond { background: var(--surface2); }
+  /* Decision tree SVG light mode text fixes */
+  body.light #decisions .fc-svg-wrap { background: #fff; border-color: var(--border); }
+  body.light #decisions svg text[fill="#e8ecf5"] { fill: #191c26; }
+  body.light #decisions svg text[fill="#8a94ad"] { fill: #464d68; }
+  body.light #decisions svg text[fill="#505870"] { fill: #8e96ad; }
+  body.light #decisions svg line[stroke="#505870"] { stroke: #c5cad8; }
+  body.light #decisions svg polygon[stroke="#505870"] { stroke: #c5cad8; }
+
   body.light .subtab-btn-sys.active  { color: var(--sys-color); border-bottom-color: var(--sys-color); }
   body.light .subtab-btn-ops.active  { color: var(--ops-color); border-bottom-color: var(--ops-color); }
   body.light .subtab-btn-kit.active  { color: var(--kit-color); border-bottom-color: var(--kit-color); }
@@ -184,31 +192,39 @@
   h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin: 24px 0 12px; }
   .subtitle { color: var(--text2); font-size: 14px; margin-bottom: 40px; font-family: 'Fraunces', serif; font-weight: 300; font-style: italic; }
 
-  /* ─── FLOW MAP (replaces system-map) ─── */
+  /* ─── FLOW MAP — horizontal, label-on-top layout ─── */
   .flow-map-wrap { overflow-x: auto; padding-bottom: 8px; }
-  .flow-map {
+  .flow-map-cols {
     display: grid;
-    grid-template-columns: 120px 36px 1fr 36px 1fr 36px 1fr 36px 1fr 36px 1fr;
-    gap: 0; min-width: 900px; align-items: start;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    min-width: 820px;
+    position: relative;
   }
-  .fm-layer-label {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px 0 0 6px; padding: 14px 12px;
-    display: flex; flex-direction: column; justify-content: center;
-    border-right: none;
+  .fm-col { display: flex; flex-direction: column; position: relative; }
+  .fm-col:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -13px; top: 28px;
+    font-size: 14px; color: var(--border2); z-index: 2;
   }
-  .fm-layer-num  { font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 3px; }
-  .fm-layer-name { font-size: 11px; color: var(--text2); font-weight: 500; }
-  .fm-tools { display: flex; flex-direction: column; gap: 2px; }
+  .fm-col-header {
+    background: var(--surface2); border: 1px solid var(--border2);
+    border-radius: 8px 8px 0 0; padding: 8px 10px;
+    text-align: center; border-bottom: none;
+  }
+  .fm-col-num  { font-size: 8.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); margin-bottom: 2px; }
+  .fm-col-name { font-size: 10.5px; font-weight: 600; color: var(--text2); }
+  .fm-col-cards { display: flex; flex-direction: column; flex: 1; }
   .tool-card-sm {
     background: var(--surface); border: 1px solid var(--border);
-    padding: 12px 14px; position: relative; overflow: hidden;
-    transition: all 0.15s; cursor: default;
+    border-top: none; padding: 10px 12px;
+    position: relative; overflow: hidden;
+    transition: all 0.15s; cursor: default; flex: 1;
   }
-  .tool-card-sm:first-child { border-radius: 0 6px 0 0; }
-  .tool-card-sm:last-child  { border-radius: 0 0 6px 0; }
-  .tool-card-sm:only-child  { border-radius: 0 6px 6px 0; }
-  .tool-card-sm + .tool-card-sm { border-top: none; }
+  .tool-card-sm:last-child { border-radius: 0 0 8px 8px; }
+  .tool-card-sm:only-child { border-radius: 0 0 8px 8px; }
+  .tool-card-sm + .tool-card-sm { border-top: 1px solid var(--border); }
   .tool-card-sm:hover { border-color: var(--border2); background: var(--surface2); }
   .tool-card-sm::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; }
   .tool-card-sm[data-tool="outlook"]::before    { background: var(--outlook); }
@@ -218,34 +234,18 @@
   .tool-card-sm[data-tool="lists"]::before      { background: var(--lists); }
   .tool-card-sm[data-tool="sharepoint"]::before { background: var(--sharepoint); }
   .tool-card-sm[data-tool="ai"]::before         { background: var(--ai); }
-  .tc-name    { font-size: 11.5px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
-  .tc-purpose { font-size: 10px; color: var(--text2); line-height: 1.4; margin-bottom: 4px; }
-  .tc-rule    { font-size: 9.5px; color: var(--text3); font-style: italic; line-height: 1.4; border-top: 1px solid var(--border); padding-top: 5px; margin-top: 3px; }
-  .tc-badge   { display:inline-block; font-size:9px; padding:1px 7px; border-radius:10px; margin-bottom:5px; font-weight:500; }
+  .tc-name    { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .tc-purpose { font-size: 9.5px; color: var(--text2); line-height: 1.4; margin-bottom: 4px; }
+  .tc-rule    { font-size: 9px; color: var(--text3); font-style: italic; line-height: 1.4; border-top: 1px solid var(--border); padding-top: 5px; margin-top: 3px; }
+  .tc-badge   { display:inline-block; font-size:8.5px; padding:1px 6px; border-radius:10px; margin-bottom:5px; font-weight:500; }
   .badge-planner { background:rgba(49,117,47,0.15); color:#66cc66; }
-  .badge-note    { font-size:9px; color:var(--teams); background:rgba(98,100,167,0.1); border:1px solid rgba(98,100,167,0.2); border-radius:4px; padding:3px 7px; margin-top:5px; line-height:1.4; display:block; }
-
-  .fm-flow-tags { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; }
-  .fm-ftag { font-size:8.5px; padding:1px 6px; border-radius:3px; border:1px solid var(--border2); color:var(--text3); background:var(--surface2); }
+  .badge-note    { font-size:8.5px; color:var(--teams); background:rgba(98,100,167,0.1); border:1px solid rgba(98,100,167,0.2); border-radius:4px; padding:3px 7px; margin-top:5px; line-height:1.4; display:block; }
+  .fm-flow-tags { display:flex; flex-wrap:wrap; gap:3px; margin-top:5px; }
+  .fm-ftag { font-size:8px; padding:1px 5px; border-radius:3px; border:1px solid var(--border2); color:var(--text3); background:var(--surface2); }
   .fm-ftag.primary { border-color:rgba(79,124,255,0.3); color:var(--accent); background:rgba(79,124,255,0.06); font-weight:500; }
-
-  .fm-arrow-col { display:flex; align-items:flex-start; justify-content:center; padding-top:30px; }
-  .fm-arrow { display:flex; flex-direction:column; align-items:center; gap:2px; }
-  .fm-dot   { width:5px; height:5px; border-radius:50%; background:var(--border2); }
-  .fm-line  { width:1px; height:40px; background:linear-gradient(to bottom,var(--border2),transparent); }
-  .fm-head  { font-size:12px; color:var(--border2); margin-top:-2px; }
-
-  .planner-buckets { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; }
-  .pb-chip { font-size:8.5px; padding:1px 7px; border-radius:3px; background:rgba(49,117,47,0.1); border:1px solid rgba(49,117,47,0.2); color:#4da84d; }
-
-  /* AI row spanning full width */
-  .fm-ai-row {
-    grid-column: 1 / -1;
-    margin-top: 10px;
-    background: var(--surface);
-    border: 1px dashed var(--border2);
-    border-radius: 8px; padding: 14px 18px;
-  }
+  .planner-buckets { display:flex; flex-wrap:wrap; gap:2px; margin-top:5px; }
+  .pb-chip { font-size:8px; padding:1px 5px; border-radius:3px; background:rgba(49,117,47,0.1); border:1px solid rgba(49,117,47,0.2); color:#4da84d; }
+  .fm-ai-row { margin-top:14px; background:var(--surface); border:1px dashed var(--border2); border-radius:8px; padding:14px 18px; }
   .fm-ai-label { font-size:9px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
   .fm-ai-label::before,.fm-ai-label::after { content:''; flex:1; height:1px; background:var(--border); }
   .fm-ai-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -322,14 +322,15 @@
   .workflow { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin-bottom: 20px; }
   .wf-title { font-family:'Fraunces',serif; font-weight:600; font-size:15px; color:var(--text); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
   .wf-steps { display: flex; flex-direction: column; gap: 0; }
-  .wf-step  { display: grid; grid-template-columns: 32px 1fr; gap: 16px; position: relative; }
-  .wf-step:not(:last-child) .wf-line { position: absolute; left: 15px; top: 36px; bottom: 0; width: 1px; background: var(--border2); }
+  .wf-step  { display: flex; gap: 16px; position: relative; align-items: flex-start; }
+  .wf-step-left { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+  .wf-step:not(:last-child) .wf-step-left::after { content: ''; display: block; width: 1px; flex: 1; min-height: 20px; background: var(--border2); margin-top: 4px; }
   .wf-num { width: 32px; height: 32px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text2); flex-shrink: 0; z-index: 1; position: relative; }
-  .wf-content { padding: 4px 0 24px; }
+  .wf-content { padding: 4px 0 24px; flex: 1; min-width: 0; }
   .wf-action  { font-size: 13px; color: var(--text); margin-bottom: 6px; }
   .wf-detail  { font-size: 11px; color: var(--text2); line-height: 1.6; }
   .wf-tool-tag{ display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: 500; margin-right: 6px; margin-top: 6px; }
-  .wf-tags-row { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; }
+  .wf-tags-row { display:flex; flex-wrap:wrap; gap:4px; margin-top:8px; align-items:center; }
 
   /* ─── TEMPLATES ─── */
   .template-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
@@ -445,14 +446,11 @@
 
 <div class="subtab-bar" id="subtabs-operations">
   <div class="subtab-row">
-    <button class="subtab-btn subtab-btn-ops active" onclick="showSubtab('operations','initiatives',this,'init-subs')">Initiatives</button>
+    <button class="subtab-btn subtab-btn-ops active" onclick="showSubtab('operations','initiatives',this,'wf-subs')">Initiatives</button>
     <button class="subtab-btn subtab-btn-ops" onclick="showSubtab('operations','workflows',this,'wf-subs')">Workflows</button>
     <button class="subtab-btn subtab-btn-ops" onclick="showSubtab('operations','weekly',this,'weekly-subs')">Weekly Review</button>
   </div>
-  <div class="subsub-row" id="init-subs">
-    <button class="subsub-btn subsub-btn-ops active" onclick="showSection('initiatives',this,'operations')">What is an Initiative?</button>
-    <button class="subsub-btn subsub-btn-ops" onclick="showSection('init-lifecycle',this,'operations')">Lifecycle</button>
-    <button class="subsub-btn subsub-btn-ops" onclick="showSection('init-registry',this,'operations')">Lists Registry</button>
+  <div class="subsub-row" id="init-subs" style="display:none">
   </div>
   <div class="subsub-row" id="wf-subs" style="display:none">
     <button class="subsub-btn subsub-btn-ops" onclick="showSection('wf-launch',this,'operations')">New Initiative Launch</button>
@@ -490,167 +488,149 @@
   <div class="subtitle">A layered architecture for GTM &amp; RevOps work — from signal to execution.</div>
 
   <div class="flow-map-wrap">
-    <div class="flow-map">
+    <div class="flow-map-cols">
 
-      <!-- ROW SPACER for label alignment -->
-      <!-- LAYER 1 -->
-      <div class="fm-layer-label">
-        <div class="fm-layer-num">Layer 1</div>
-        <div class="fm-layer-name">Communication Intake</div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-      <!-- LAYER 2 -->
-      <div class="fm-tools">
-        <div class="tool-card-sm" data-tool="outlook">
-          <div class="tc-name">Outlook</div>
-          <div class="tc-purpose">Email — async requests, project updates, stakeholder comms</div>
-          <div class="tc-rule">Inbox ≠ task list. Process → move on.</div>
-          <div class="fm-flow-tags"><div class="fm-ftag primary">→ Private Planner</div><div class="fm-ftag">→ Loop (if initiative)</div></div>
+      <!-- L1: INTAKE -->
+      <div class="fm-col">
+        <div class="fm-col-header">
+          <div class="fm-col-num">Layer 1</div>
+          <div class="fm-col-name">Communication Intake</div>
         </div>
-        <div class="tool-card-sm" data-tool="teams">
-          <div class="tc-name">Teams</div>
-          <div class="tc-purpose">Live conversation, meetings, quick collaboration</div>
-          <span class="badge-note">⚡ Native: create task directly in Planner from any Teams message</span>
-          <div class="tc-rule">Meetings don't organize the system. Initiatives do.</div>
-          <div class="fm-flow-tags"><div class="fm-ftag primary">→ Planner (direct)</div><div class="fm-ftag">→ Private Planner (triage)</div><div class="fm-ftag">→ Loop (meeting output)</div></div>
-        </div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-
-      <!-- LAYER 2 col -->
-      <div class="fm-layer-label" style="border-radius:0;grid-row:auto">
-        <div class="fm-layer-num">Layer 2</div>
-        <div class="fm-layer-name">Personal Triage</div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-      <div class="fm-tools">
-        <div class="tool-card-sm" data-tool="planner">
-          <div class="tc-name">Private Planner</div>
-          <div class="tc-badge badge-planner">Personal Intake Queue</div>
-          <div class="tc-purpose">Capture everything first. Quick tasks, personal reminders, waiting-on items. Frictionless first landing zone.</div>
-          <div class="tc-rule">Not everything here becomes committed sprint work. Triage weekly and promote what's real.</div>
-          <div class="fm-flow-tags"><div class="fm-ftag primary">→ Domain Planner (committed)</div><div class="fm-ftag">→ Loop (if initiative context)</div><div class="fm-ftag">→ Archive</div></div>
-        </div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-
-      <!-- LAYER 3 col -->
-      <div class="fm-layer-label" style="border-radius:0">
-        <div class="fm-layer-num">Layer 3</div>
-        <div class="fm-layer-name">Committed Execution</div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-      <div class="fm-tools">
-        <div class="tool-card-sm" data-tool="planner">
-          <div class="tc-name">Planner — "RevOps OS"</div>
-          <div class="tc-badge badge-planner">One Consolidated Board</div>
-          <div class="tc-purpose">All committed sprint tasks. Tasks are domain-bucketed and link back to their initiative in Loop for context.</div>
-          <div class="planner-buckets">
-            <div class="pb-chip">Inbox</div><div class="pb-chip">Revenue Infra</div><div class="pb-chip">GTM Ops</div>
-            <div class="pb-chip">Enablement</div><div class="pb-chip">Strategic / AI</div>
-            <div class="pb-chip">Waiting</div><div class="pb-chip">Blocked</div><div class="pb-chip">Completed</div>
+        <div class="fm-col-cards">
+          <div class="tool-card-sm" data-tool="outlook">
+            <div class="tc-name">Outlook</div>
+            <div class="tc-purpose">Email — async requests, project updates, stakeholder comms</div>
+            <div class="tc-rule">Inbox ≠ task list. Process → move on.</div>
+            <div class="fm-flow-tags"><div class="fm-ftag primary">→ Private Planner</div><div class="fm-ftag">→ Loop (if initiative)</div></div>
           </div>
-          <div class="tc-rule">Only tasks you WILL do this sprint. No parking lot. No wishlist.</div>
-          <div class="fm-flow-tags"><div class="fm-ftag primary">→ Loop (context reference)</div><div class="fm-ftag">→ Done</div></div>
-        </div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-
-      <!-- LAYER 4 col -->
-      <div class="fm-layer-label" style="border-radius:0">
-        <div class="fm-layer-num">Layer 4</div>
-        <div class="fm-layer-name">Strategic Context</div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-      <div class="fm-tools">
-        <div class="tool-card-sm" data-tool="loop">
-          <div class="tc-name">Loop — "Tim OS"</div>
-          <div class="tc-purpose">One page per initiative. Project briefs nested underneath. Context, decisions, status, blockers — the memory layer.</div>
-          <div class="tc-rule">Compressed context only. No raw transcripts. One workspace, everything inside.</div>
-          <div class="fm-flow-tags"><div class="fm-ftag primary">→ SharePoint (file links)</div><div class="fm-ftag">→ Lists (status sync)</div><div class="fm-ftag">→ AI (synthesis)</div></div>
-        </div>
-        <div class="tool-card-sm" data-tool="lists">
-          <div class="tc-name">Lists</div>
-          <div class="tc-purpose">Initiative registry — all active initiatives with owner, status, phase, domain. The operational map.</div>
-          <div class="tc-rule">10–15 active initiatives max. More = overcommitted.</div>
-          <div class="fm-flow-tags"><div class="fm-ftag primary">→ Loop (navigate to page)</div><div class="fm-ftag">→ Planner (navigate to tasks)</div></div>
-        </div>
-      </div>
-      <div class="fm-arrow-col">
-        <div class="fm-arrow"><div class="fm-dot"></div><div class="fm-line"></div><div class="fm-head">→</div></div>
-      </div>
-
-      <!-- LAYER 5 col -->
-      <div class="fm-layer-label" style="border-radius:0 6px 6px 0">
-        <div class="fm-layer-num">Layer 5</div>
-        <div class="fm-layer-name">Document Memory</div>
-      </div>
-      <!-- no arrow after last -->
-      <div></div>
-      <div class="fm-tools">
-        <div class="tool-card-sm" data-tool="sharepoint" style="border-radius:0 6px 6px 0">
-          <div class="tc-name">SharePoint / OneDrive</div>
-          <div class="tc-purpose">Files, decks, contracts, reports. Organized by operational domain. Linked from Loop pages.</div>
-          <div class="tc-rule">Navigate here via Loop links — not independently.</div>
-          <div style="margin-top:6px">
-            <div style="font-size:8.5px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px;">Domain folders</div>
-            <div class="fm-flow-tags">
-              <div class="fm-ftag">Revenue Infra</div><div class="fm-ftag">GTM Ops</div>
-              <div class="fm-ftag">Enablement</div><div class="fm-ftag">AI &amp; Strategic</div><div class="fm-ftag">Admin / Private</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div></div>
-
-      <!-- AI STRIP — spans full width -->
-      <div class="fm-ai-row">
-        <div class="fm-ai-label">Layer 6 — AI Processing · Available at any stage of the flow</div>
-        <div class="fm-ai-cards">
-          <div class="fm-ai-card">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
-              <div class="fm-ai-name">Claude</div>
-              <span style="font-size:9px;padding:1px 7px;border-radius:10px;background:rgba(245,165,36,0.12);color:var(--amber);font-weight:500;">Synthesis + Structure</span>
-            </div>
-            <div class="fm-ai-role">Synthesis, decision support, context recovery, Loop page drafting, planning</div>
-            <div class="fm-ai-uses">
-              <div class="fm-ai-use">Meeting → Loop summary</div><div class="fm-ai-use">Inbox triage</div>
-              <div class="fm-ai-use">Initiative synthesis</div><div class="fm-ai-use">Executive translation</div>
-              <div class="fm-ai-use">Context recovery</div><div class="fm-ai-use">Decision framing</div>
-            </div>
-            <div class="fm-ai-rule">Plugs in at intake, triage, context — anywhere you need cognitive compression.</div>
-          </div>
-          <div class="fm-ai-card">
-            <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
-              <div class="fm-ai-name">ChatGPT</div>
-              <span style="font-size:9px;padding:1px 7px;border-radius:10px;background:rgba(245,165,36,0.12);color:var(--amber);font-weight:500;">Drafting + Research</span>
-            </div>
-            <div class="fm-ai-role">Drafting, brainstorming, research, alternate perspectives, writing polish</div>
-            <div class="fm-ai-uses">
-              <div class="fm-ai-use">Draft emails / comms</div><div class="fm-ai-use">Research topics</div>
-              <div class="fm-ai-use">Brainstorm alternatives</div><div class="fm-ai-use">Process design</div>
-            </div>
-            <div class="fm-ai-rule">Interchangeable with Claude for cognitive tasks. Human reviews and approves all output.</div>
+          <div class="tool-card-sm" data-tool="teams">
+            <div class="tc-name">Teams</div>
+            <div class="tc-purpose">Live conversation, meetings, quick collaboration</div>
+            <span class="badge-note">⚡ Native: create task directly in Planner from any Teams message</span>
+            <div class="tc-rule">Meetings don't organize the system. Initiatives do.</div>
+            <div class="fm-flow-tags"><div class="fm-ftag primary">→ Planner (direct)</div><div class="fm-ftag">→ Private Planner (triage)</div><div class="fm-ftag">→ Loop (meeting output)</div></div>
           </div>
         </div>
       </div>
 
-    </div><!-- end flow-map -->
-  </div><!-- end wrap -->
+      <!-- L2: TRIAGE -->
+      <div class="fm-col">
+        <div class="fm-col-header">
+          <div class="fm-col-num">Layer 2</div>
+          <div class="fm-col-name">Personal Triage</div>
+        </div>
+        <div class="fm-col-cards">
+          <div class="tool-card-sm" data-tool="planner">
+            <div class="tc-name">Private Planner</div>
+            <div class="tc-badge badge-planner">Personal Intake Queue</div>
+            <div class="tc-purpose">Capture everything first. Quick tasks, personal reminders, waiting-on items. Frictionless first landing zone.</div>
+            <div class="tc-rule">Not everything here becomes sprint work. Triage weekly — promote what's real.</div>
+            <div class="fm-flow-tags"><div class="fm-ftag primary">→ Domain Planner (committed)</div><div class="fm-ftag">→ Loop (if initiative)</div><div class="fm-ftag">→ Archive</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- L3: EXECUTION -->
+      <div class="fm-col">
+        <div class="fm-col-header">
+          <div class="fm-col-num">Layer 3</div>
+          <div class="fm-col-name">Committed Execution</div>
+        </div>
+        <div class="fm-col-cards">
+          <div class="tool-card-sm" data-tool="planner">
+            <div class="tc-name">Planner — "RevOps OS"</div>
+            <div class="tc-badge badge-planner">One Consolidated Board</div>
+            <div class="tc-purpose">All committed sprint tasks. Domain-bucketed. Tasks link back to their initiative in Loop for context.</div>
+            <div class="planner-buckets">
+              <div class="pb-chip">Inbox</div><div class="pb-chip">Revenue Infra</div><div class="pb-chip">GTM Ops</div>
+              <div class="pb-chip">Enablement</div><div class="pb-chip">Strategic/AI</div>
+              <div class="pb-chip">Waiting</div><div class="pb-chip">Blocked</div><div class="pb-chip">Completed</div>
+            </div>
+            <div class="tc-rule">Only tasks you WILL do this sprint. No wishlist. No parking lot.</div>
+            <div class="fm-flow-tags"><div class="fm-ftag primary">→ Loop (context reference)</div><div class="fm-ftag">→ Done</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- L4: CONTEXT -->
+      <div class="fm-col">
+        <div class="fm-col-header">
+          <div class="fm-col-num">Layer 4</div>
+          <div class="fm-col-name">Strategic Context</div>
+        </div>
+        <div class="fm-col-cards">
+          <div class="tool-card-sm" data-tool="loop">
+            <div class="tc-name">Loop — "Tim OS"</div>
+            <div class="tc-purpose">One page per initiative. Project briefs nested underneath. Context, decisions, status, blockers — the memory layer.</div>
+            <div class="tc-rule">Compressed context only. No raw transcripts.</div>
+            <div class="fm-flow-tags"><div class="fm-ftag primary">→ SharePoint (file links)</div><div class="fm-ftag">→ Lists (status)</div><div class="fm-ftag">→ AI (synthesis)</div></div>
+          </div>
+          <div class="tool-card-sm" data-tool="lists">
+            <div class="tc-name">Lists</div>
+            <div class="tc-purpose">Initiative registry — all active initiatives with owner, status, phase, domain. The operational map.</div>
+            <div class="tc-rule">10–15 active initiatives max.</div>
+            <div class="fm-flow-tags"><div class="fm-ftag primary">→ Loop (navigate)</div><div class="fm-ftag">→ Planner (tasks)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- L5: STORAGE -->
+      <div class="fm-col">
+        <div class="fm-col-header">
+          <div class="fm-col-num">Layer 5</div>
+          <div class="fm-col-name">Document Memory</div>
+        </div>
+        <div class="fm-col-cards">
+          <div class="tool-card-sm" data-tool="sharepoint">
+            <div class="tc-name">SharePoint / OneDrive</div>
+            <div class="tc-purpose">Files, decks, contracts, reports. Organized by domain. Linked from Loop pages.</div>
+            <div class="tc-rule">Navigate here via Loop links — not independently.</div>
+            <div style="margin-top:5px">
+              <div style="font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">Domain folders</div>
+              <div class="fm-flow-tags">
+                <div class="fm-ftag">Revenue Infra</div><div class="fm-ftag">GTM Ops</div>
+                <div class="fm-ftag">Enablement</div><div class="fm-ftag">AI &amp; Strategic</div><div class="fm-ftag">Admin</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end flow-map-cols -->
+
+    <!-- L6: AI -->
+    <div class="fm-ai-row">
+      <div class="fm-ai-label">Layer 6 — AI Processing · Available at any stage of the flow</div>
+      <div class="fm-ai-cards">
+        <div class="fm-ai-card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+            <div class="fm-ai-name">Claude</div>
+            <span style="font-size:9px;padding:1px 7px;border-radius:10px;background:rgba(245,165,36,0.12);color:var(--amber);font-weight:500;">Synthesis + Structure</span>
+          </div>
+          <div class="fm-ai-role">Synthesis, decision support, context recovery, Loop page drafting, planning</div>
+          <div class="fm-ai-uses">
+            <div class="fm-ai-use">Meeting → Loop summary</div><div class="fm-ai-use">Inbox triage</div>
+            <div class="fm-ai-use">Initiative synthesis</div><div class="fm-ai-use">Executive translation</div>
+            <div class="fm-ai-use">Context recovery</div><div class="fm-ai-use">Decision framing</div>
+          </div>
+          <div class="fm-ai-rule">Plugs in at intake, triage, context — anywhere you need cognitive compression.</div>
+        </div>
+        <div class="fm-ai-card">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">
+            <div class="fm-ai-name">ChatGPT</div>
+            <span style="font-size:9px;padding:1px 7px;border-radius:10px;background:rgba(245,165,36,0.12);color:var(--amber);font-weight:500;">Drafting + Research</span>
+          </div>
+          <div class="fm-ai-role">Drafting, brainstorming, research, alternate perspectives, writing polish</div>
+          <div class="fm-ai-uses">
+            <div class="fm-ai-use">Draft emails / comms</div><div class="fm-ai-use">Research topics</div>
+            <div class="fm-ai-use">Brainstorm alternatives</div><div class="fm-ai-use">Process design</div>
+          </div>
+          <div class="fm-ai-rule">Interchangeable with Claude for cognitive tasks. Human reviews and approves all output.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end flow-map-wrap -->
 </div>
 
 <!-- ── CORE PRINCIPLES ── -->
@@ -724,35 +704,35 @@
     <div class="wf-title">📧 Outlook Inbox Processing</div>
     <div class="wf-steps">
       <div class="wf-step">
-        <div class="wf-num">1</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">1</div></div>
         <div class="wf-content">
           <div class="wf-action">Open batch of emails (2x per day — morning + afternoon)</div>
           <div class="wf-detail">Don't live in your inbox. Designated processing windows reduce context-switching.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">2</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">2</div></div>
         <div class="wf-content">
           <div class="wf-action">For each email: apply the triage decision flow</div>
           <div class="wf-detail">No action needed? Archive. Quick action? Do it. Needs work? Route to Private Planner or Domain Planner.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">3</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">3</div></div>
         <div class="wf-content">
           <div class="wf-action">Flag initiative-relevant emails for Loop update</div>
           <div class="wf-detail">If the email contains a decision, blocker, or status update for an initiative — note it. Update Loop page at end of processing session.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">4</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">4</div></div>
         <div class="wf-content">
           <div class="wf-action">Process Private Planner items created during email review</div>
           <div class="wf-detail">At end of session: review any new Private Planner items. Are any of these actually Domain Planner tasks? Promote as needed.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">5</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">5</div></div>
         <div class="wf-content">
           <div class="wf-action">Close Outlook until next processing window</div>
           <div class="wf-detail">Notifications off. The system handles routing. You don't need to watch it.</div>
@@ -773,7 +753,7 @@
     <div class="wf-title">🎙️ Post-Meeting Workflow (15 min max)</div>
     <div class="wf-steps">
       <div class="wf-step">
-        <div class="wf-num">1</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">1</div></div>
         <div class="wf-content">
           <div class="wf-action">Immediately after meeting: capture raw outputs</div>
           <div class="wf-detail">Decisions made. Action items with owners. Blockers surfaced. Questions raised. Do this within 15 minutes while it's fresh.</div>
@@ -784,14 +764,14 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">2</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">2</div></div>
         <div class="wf-content">
           <div class="wf-action">Identify which initiative(s) this meeting served</div>
           <div class="wf-detail">Every meeting should connect to an initiative. If it doesn't, ask why it happened.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">3</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">3</div></div>
         <div class="wf-content">
           <div class="wf-action">Update the Loop page — delta only</div>
           <div class="wf-detail">Don't paste notes or transcript. Answer: what changed? What was decided? What's the new next step? Write 3–5 compressed lines max. Update the "Last Updated" field.</div>
@@ -802,7 +782,7 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">4</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">4</div></div>
         <div class="wf-content">
           <div class="wf-action">Promote meeting action items to Domain Planner if committed</div>
           <div class="wf-detail">Only if you're actually doing these this sprint. Tentative? Leave in Private Planner.</div>
@@ -813,7 +793,7 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">5</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">5</div></div>
         <div class="wf-content">
           <div class="wf-action">Use AI to synthesize if the meeting was complex</div>
           <div class="wf-detail">Paste your raw notes to Claude. Ask: "Compress this into a 5-line status update for my Loop page." Review and paste the output.</div>
@@ -831,8 +811,10 @@
      ② OPERATIONS — INITIATIVES
 ════════════════════════════════════════════════ -->
 <div class="section" id="initiatives">
-  <h1>What Makes Something an Initiative?</h1>
+  <h1>Initiative Management</h1>
   <div class="subtitle">The organizing unit of all sustained work. Everything maps to an initiative.</div>
+
+  <h2>What Makes Something an Initiative?</h2>
   <div class="two-col">
     <div>
       <h3>✓ It IS an initiative if:</h3>
@@ -843,7 +825,7 @@
         <li style="display:flex;gap:8px;"><span style="color:var(--green);">✓</span> Requires coordination with others</li>
         <li style="display:flex;gap:8px;"><span style="color:var(--green);">✓</span> Has strategic importance to GTM/RevOps goals</li>
         <li style="display:flex;gap:8px;"><span style="color:var(--green);">✓</span> Will have recurring meetings or touchpoints</li>
-        <li style="display:flex;gap:8px;"><span style="color:var(--green);">✓</span> Examples: CRM migration, pipeline review redesign, onboarding playbook, territory planning</li>
+        <li style="display:flex;gap:8px;"><span style="color:var(--green);">✓</span> Examples: CRM migration, pipeline review redesign, onboarding playbook</li>
       </ul>
     </div>
     <div>
@@ -858,11 +840,8 @@
       </ul>
     </div>
   </div>
-</div>
 
-<div class="section" id="init-lifecycle">
-  <h1>Initiative Lifecycle</h1>
-  <div class="subtitle">Every initiative moves through these stages — track it in Lists.</div>
+  <h2>Initiative Lifecycle</h2>
   <div class="lifecycle">
     <div class="lc-stage"><div class="lc-num">01</div><div class="lc-name">Identified</div><div class="lc-items">In Private Planner or Loop draft. Not yet committed. Evaluating if real.</div></div>
     <div class="lc-stage"><div class="lc-num">02</div><div class="lc-name">Active</div><div class="lc-items">In Lists. Loop page exists. Domain Planner has sprint tasks.</div></div>
@@ -870,11 +849,8 @@
     <div class="lc-stage"><div class="lc-num">04</div><div class="lc-name">Completing</div><div class="lc-items">Final tasks in Planner. Loop page being closed out + archived.</div></div>
     <div class="lc-stage"><div class="lc-num">05</div><div class="lc-name">Closed</div><div class="lc-items">Loop page archived. Lists row marked complete. SharePoint for final docs.</div></div>
   </div>
-</div>
 
-<div class="section" id="init-registry">
-  <h1>Lists — Initiative Registry</h1>
-  <div class="subtitle">The operational map. Every active initiative in one view.</div>
+  <h2>Lists — Initiative Registry</h2>
   <div class="template-card">
     <div class="template-header">
       <div class="template-title">Microsoft Lists — GTM Initiative Registry</div>
@@ -905,14 +881,14 @@
     <div class="wf-title">🚀 Spinning Up a New Initiative</div>
     <div class="wf-steps">
       <div class="wf-step">
-        <div class="wf-num">1</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">1</div></div>
         <div class="wf-content">
           <div class="wf-action">Validate it qualifies as an initiative (use the decision flow)</div>
           <div class="wf-detail">If no → task in Private or Domain Planner. If yes → continue.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">2</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">2</div></div>
         <div class="wf-content">
           <div class="wf-action">Add a row to the Lists Initiative Registry</div>
           <div class="wf-detail">Name, Status=Active, Phase, Owner, Target Date. Leave Loop/Planner links blank for now.</div>
@@ -920,7 +896,7 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">3</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">3</div></div>
         <div class="wf-content">
           <div class="wf-action">Create the Loop page using the Initiative Template</div>
           <div class="wf-detail">Fill in: Purpose, Current State, Goal, Stakeholders, Key Decisions (empty), Next Actions, Open Questions. Link SharePoint folder if one exists.</div>
@@ -928,7 +904,7 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">4</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">4</div></div>
         <div class="wf-content">
           <div class="wf-action">Add tasks to the RevOps OS Planner under the correct domain bucket</div>
           <div class="wf-detail">Add tasks to the consolidated RevOps OS Planner, placing them in the relevant domain bucket (e.g. Revenue Infrastructure, GTM Operations). Only add tasks you have right now — don't pre-fill speculatively.</div>
@@ -936,14 +912,14 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">5</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">5</div></div>
         <div class="wf-content">
           <div class="wf-action">Update Lists row with Loop and Planner links</div>
           <div class="wf-detail">The registry should always be a reliable index to the full context.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">6</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">6</div></div>
         <div class="wf-content">
           <div class="wf-action">Optional: use AI to draft the Loop page scaffold</div>
           <div class="wf-detail">Give Claude the initiative name, your raw notes/context, and ask it to draft the Loop page structure. Review and customize.</div>
@@ -961,14 +937,14 @@
     <div class="wf-title">📊 Weekly Pipeline Review Prep</div>
     <div class="wf-steps">
       <div class="wf-step">
-        <div class="wf-num">1</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">1</div></div>
         <div class="wf-content">
           <div class="wf-action">Pull pipeline data from CRM (day before review)</div>
           <div class="wf-detail">Export or screenshot current pipeline by stage, rep, and deal age.</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">2</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">2</div></div>
         <div class="wf-content">
           <div class="wf-action">Run AI analysis on pipeline data</div>
           <div class="wf-detail">Paste pipeline snapshot into Claude. Ask: "What are the top 3 risks, top 3 opportunities, and any patterns I should flag for the team meeting?"</div>
@@ -976,7 +952,7 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">3</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">3</div></div>
         <div class="wf-content">
           <div class="wf-action">Update Loop page for Pipeline Review initiative</div>
           <div class="wf-detail">Paste your pre-meeting analysis. Note: deals at risk, stale opportunities, deals moved this week.</div>
@@ -984,14 +960,14 @@
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">4</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">4</div></div>
         <div class="wf-content">
           <div class="wf-action">After review: capture decisions and action items only</div>
           <div class="wf-detail">Not a transcript. What changed? What's the follow-up? Who owns what?</div>
         </div>
       </div>
       <div class="wf-step">
-        <div class="wf-num">5</div><div class="wf-line"></div>
+        <div class="wf-step-left"><div class="wf-num">5</div></div>
         <div class="wf-content">
           <div class="wf-action">Route follow-up actions to correct owners</div>
           <div class="wf-detail">Your tasks → Domain Planner. Others' tasks → communicate via Teams. Update Loop status.</div>
@@ -1066,162 +1042,151 @@
   <h1>Master Decision Flow</h1>
   <div class="subtitle">One flow. A signal arrives — follow the branches to find its home.</div>
 
-  <div class="fc-wrap">
-    <div class="fc-canvas">
+  <div class="fc-svg-wrap" style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px 20px;overflow-x:auto;transition:background 0.2s,border-color 0.2s;">
+    <svg viewBox="0 0 960 820" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:640px;font-family:'DM Mono',monospace;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#505870"/>
+        </marker>
+        <marker id="arr-yes" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#3dd68c"/>
+        </marker>
+        <marker id="arr-no" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#f54f4f"/>
+        </marker>
+      </defs>
 
-      <!-- START -->
-      <div class="fc-start">A signal arrives — email, message, meeting, thought</div>
-      <div class="fc-vline"></div>
+      <!-- ── START ── -->
+      <rect x="280" y="10" width="400" height="36" rx="18" fill="none" stroke="#4f7cff" stroke-width="1.5"/>
+      <text x="480" y="33" text-anchor="middle" font-size="12" fill="#4f7cff">A signal arrives — email, message, meeting, thought</text>
+      <line x1="480" y1="46" x2="480" y2="72" stroke="#505870" stroke-width="1.5" marker-end="url(#arr)"/>
 
-      <!-- Q1 -->
-      <div class="fc-diamond-wrap">
-        <div class="fc-diamond"><div class="fc-diamond-text">Does this require any action?</div></div>
-      </div>
-      <div style="display:flex;width:100%;justify-content:center;align-items:flex-start;gap:60px;">
-        <!-- NO branch -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div class="fc-vline"></div>
-          <div class="fc-branch-label fc-branch-no">NO</div>
-          <div class="fc-vline"></div>
-          <div class="fc-dest dest-archive">Archive / Ignore</div>
-          <div class="fc-dest-note">File for reference if needed. Do not create a task.</div>
-        </div>
-        <!-- YES branch -->
-        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div class="fc-vline"></div>
-          <div class="fc-branch-label fc-branch-yes">YES ↓</div>
-          <div class="fc-vline"></div>
+      <!-- ── Q1: Requires action? ── -->
+      <polygon points="480,74 600,102 480,130 360,102" fill="none" stroke="#f5a524" stroke-width="1.5"/>
+      <text x="480" y="98" text-anchor="middle" font-size="11" fill="#e8ecf5">Does this require</text>
+      <text x="480" y="114" text-anchor="middle" font-size="11" fill="#e8ecf5">any action?</text>
 
-          <!-- Q2 -->
-          <div class="fc-diamond-wrap">
-            <div class="fc-diamond"><div class="fc-diamond-text">Can I do this in under 5 minutes right now?</div></div>
-          </div>
-          <div style="display:flex;gap:50px;align-items:flex-start;">
-            <!-- YES: do it now -->
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <div class="fc-vline"></div>
-              <div class="fc-branch-label fc-branch-yes">YES</div>
-              <div class="fc-vline"></div>
-              <div class="fc-dest dest-do-now">Do it now</div>
-              <div class="fc-dest-note">Execute and move on. No task needed.</div>
-            </div>
-            <!-- NO: continue -->
-            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-              <div class="fc-vline"></div>
-              <div class="fc-branch-label fc-branch-no">NO ↓</div>
-              <div class="fc-vline"></div>
+      <!-- NO left -->
+      <line x1="360" y1="102" x2="160" y2="102" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="260" y="95" text-anchor="middle" font-size="10" fill="#f54f4f">NO</text>
+      <rect x="60" y="82" width="100" height="40" rx="6" fill="rgba(80,88,112,0.2)" stroke="#505870" stroke-width="1"/>
+      <text x="110" y="99" text-anchor="middle" font-size="10.5" fill="#8a94ad" font-weight="600">Archive</text>
+      <text x="110" y="114" text-anchor="middle" font-size="9" fill="#505870">/ Ignore</text>
 
-              <!-- Q3 -->
-              <div class="fc-diamond-wrap">
-                <div class="fc-diamond"><div class="fc-diamond-text">Is it linked to an active initiative?</div></div>
-              </div>
-              <div style="display:flex;gap:44px;align-items:flex-start;">
-                <!-- NO: private planner -->
-                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                  <div class="fc-vline"></div>
-                  <div class="fc-branch-label fc-branch-no">NO</div>
-                  <div class="fc-vline"></div>
-                  <div class="fc-dest dest-private">Private Planner</div>
-                  <div class="fc-dest-note">Capture &amp; triage later. Promote to Domain Planner when committed.</div>
-                </div>
-                <!-- YES: continue -->
-                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                  <div class="fc-vline"></div>
-                  <div class="fc-branch-label fc-branch-yes">YES ↓</div>
-                  <div class="fc-vline"></div>
+      <!-- YES down -->
+      <line x1="480" y1="130" x2="480" y2="158" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="492" y="148" font-size="10" fill="#3dd68c">YES</text>
 
-                  <!-- Q4 -->
-                  <div class="fc-diamond-wrap">
-                    <div class="fc-diamond"><div class="fc-diamond-text">Is it a new body of work (not a task)?</div></div>
-                  </div>
-                  <div style="display:flex;gap:36px;align-items:flex-start;">
-                    <!-- YES: new initiative path -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                      <div class="fc-vline"></div>
-                      <div class="fc-branch-label fc-branch-yes">YES ↓</div>
-                      <div class="fc-vline"></div>
+      <!-- ── Q2: Under 5 min? ── -->
+      <polygon points="480,160 620,192 480,224 340,192" fill="none" stroke="#f5a524" stroke-width="1.5"/>
+      <text x="480" y="186" text-anchor="middle" font-size="11" fill="#e8ecf5">Can I do this in</text>
+      <text x="480" y="202" text-anchor="middle" font-size="11" fill="#e8ecf5">under 5 minutes?</text>
 
-                      <!-- Q5: 2+ weeks? -->
-                      <div class="fc-diamond-wrap">
-                        <div class="fc-diamond"><div class="fc-diamond-text">Will it take 2+ weeks &amp; has defined outcome?</div></div>
-                      </div>
-                      <div style="display:flex;gap:30px;align-items:flex-start;">
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                          <div class="fc-vline"></div>
-                          <div class="fc-branch-label fc-branch-no">NO</div>
-                          <div class="fc-vline"></div>
-                          <div class="fc-dest dest-private">Private Planner</div>
-                          <div class="fc-dest-note">Not an initiative yet. Just a task.</div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                          <div class="fc-vline"></div>
-                          <div class="fc-branch-label fc-branch-yes">YES ↓</div>
-                          <div class="fc-vline"></div>
+      <!-- YES left -->
+      <line x1="340" y1="192" x2="160" y2="192" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="250" y="185" text-anchor="middle" font-size="10" fill="#3dd68c">YES</text>
+      <rect x="50" y="172" width="110" height="40" rx="6" fill="rgba(61,214,140,0.1)" stroke="rgba(61,214,140,0.4)" stroke-width="1"/>
+      <text x="105" y="189" text-anchor="middle" font-size="10.5" fill="#3dd68c" font-weight="600">Do it now</text>
+      <text x="105" y="204" text-anchor="middle" font-size="9" fill="#505870">close the loop</text>
 
-                          <!-- Q6: coordination -->
-                          <div class="fc-diamond-wrap">
-                            <div class="fc-diamond"><div class="fc-diamond-text">Needs coordination with others?</div></div>
-                          </div>
-                          <div style="display:flex;gap:30px;align-items:flex-start;">
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                              <div class="fc-vline"></div>
-                              <div class="fc-branch-label fc-branch-no">NO</div>
-                              <div class="fc-vline"></div>
-                              <div class="fc-dest dest-loop">Loop page only</div>
-                              <div class="fc-dest-note">Personal initiative. May add to Lists if strategically important.</div>
-                            </div>
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                              <div class="fc-vline"></div>
-                              <div class="fc-branch-label fc-branch-yes">YES</div>
-                              <div class="fc-vline"></div>
-                              <div class="fc-dest dest-lists">Lists + Loop page</div>
-                              <div class="fc-dest-note">Add to registry. Create Loop page. Add Planner tasks when execution-ready.</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+      <!-- NO down -->
+      <line x1="480" y1="224" x2="480" y2="252" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="492" y="242" font-size="10" fill="#f54f4f">NO</text>
 
-                    <!-- NO: it's a task for existing initiative -->
-                    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                      <div class="fc-vline"></div>
-                      <div class="fc-branch-label fc-branch-no">NO ↓</div>
-                      <div class="fc-vline"></div>
+      <!-- ── Q3: Linked to initiative? ── -->
+      <polygon points="480,254 640,290 480,326 320,290" fill="none" stroke="#f5a524" stroke-width="1.5"/>
+      <text x="480" y="284" text-anchor="middle" font-size="11" fill="#e8ecf5">Is it linked to an</text>
+      <text x="480" y="300" text-anchor="middle" font-size="11" fill="#e8ecf5">active initiative?</text>
 
-                      <!-- Q: is it context or executable? -->
-                      <div class="fc-diamond-wrap">
-                        <div class="fc-diamond"><div class="fc-diamond-text">Is it executable — a task with a done state?</div></div>
-                      </div>
-                      <div style="display:flex;gap:30px;align-items:flex-start;">
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                          <div class="fc-vline"></div>
-                          <div class="fc-branch-label fc-branch-yes">YES</div>
-                          <div class="fc-vline"></div>
-                          <div class="fc-dest dest-planner">Domain Planner</div>
-                          <div class="fc-dest-note">Only if committed this sprint. Otherwise Private Planner.</div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                          <div class="fc-vline"></div>
-                          <div class="fc-branch-label fc-branch-no">NO</div>
-                          <div class="fc-vline"></div>
-                          <div class="fc-dest dest-loop">Loop page update</div>
-                          <div class="fc-dest-note">Context, decision, status, or blocker → compressed update to initiative page.</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- NO left → Private Planner -->
+      <line x1="320" y1="290" x2="160" y2="290" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="240" y="283" text-anchor="middle" font-size="10" fill="#f54f4f">NO</text>
+      <rect x="50" y="268" width="110" height="44" rx="6" fill="rgba(37,100,207,0.15)" stroke="rgba(37,100,207,0.4)" stroke-width="1"/>
+      <text x="105" y="285" text-anchor="middle" font-size="10.5" fill="#6699ff" font-weight="600">Private</text>
+      <text x="105" y="300" text-anchor="middle" font-size="10.5" fill="#6699ff" font-weight="600">Planner</text>
+      <text x="105" y="313" text-anchor="middle" font-size="8.5" fill="#505870">triage later</text>
 
-    </div><!-- end fc-canvas -->
-  </div><!-- end fc-wrap -->
+      <!-- YES down -->
+      <line x1="480" y1="326" x2="480" y2="354" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="492" y="344" font-size="10" fill="#3dd68c">YES</text>
 
-  <div class="info-box" style="margin-top:20px;">
-    <strong>Quick reference:</strong> Archive (no action) → Do it now (&lt;5 min) → Private Planner (not initiative-linked) → Domain Planner (committed task) → Loop update (context/decision) → Lists + Loop (new initiative)
+      <!-- ── Q4: New body of work? ── -->
+      <polygon points="480,356 640,392 480,428 320,392" fill="none" stroke="#f5a524" stroke-width="1.5"/>
+      <text x="480" y="386" text-anchor="middle" font-size="11" fill="#e8ecf5">Is it a new body of</text>
+      <text x="480" y="402" text-anchor="middle" font-size="11" fill="#e8ecf5">work (not a task)?</text>
+
+      <!-- NO right → executable or context -->
+      <line x1="640" y1="392" x2="780" y2="392" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="710" y="384" text-anchor="middle" font-size="10" fill="#f54f4f">NO (it's a task)</text>
+
+      <!-- Q4b: Executable? -->
+      <polygon points="830,392 920,414 830,436 740,414" fill="none" stroke="#f5a524" stroke-width="1.2"/>
+      <text x="830" y="408" text-anchor="middle" font-size="9.5" fill="#e8ecf5">Executable?</text>
+      <text x="830" y="422" text-anchor="middle" font-size="9.5" fill="#e8ecf5">Done state?</text>
+
+      <!-- YES → Domain Planner -->
+      <line x1="830" y1="436" x2="830" y2="464" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="842" y="454" font-size="10" fill="#3dd68c">YES</text>
+      <rect x="762" y="466" width="136" height="44" rx="6" fill="rgba(49,117,47,0.15)" stroke="rgba(49,117,47,0.4)" stroke-width="1"/>
+      <text x="830" y="483" text-anchor="middle" font-size="10.5" fill="#66cc66" font-weight="600">Domain Planner</text>
+      <text x="830" y="498" text-anchor="middle" font-size="8.5" fill="#505870">if committed this sprint</text>
+
+      <!-- NO → Loop update -->
+      <line x1="740" y1="414" x2="660" y2="510" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="690" y="456" font-size="10" fill="#f54f4f">NO</text>
+      <rect x="590" y="512" width="140" height="44" rx="6" fill="rgba(196,62,159,0.15)" stroke="rgba(196,62,159,0.4)" stroke-width="1"/>
+      <text x="660" y="529" text-anchor="middle" font-size="10.5" fill="#e066cc" font-weight="600">Loop page update</text>
+      <text x="660" y="544" text-anchor="middle" font-size="8.5" fill="#505870">context / decision / status</text>
+
+      <!-- YES down from Q4 → new initiative path -->
+      <line x1="480" y1="428" x2="480" y2="456" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="492" y="446" font-size="10" fill="#3dd68c">YES</text>
+
+      <!-- ── Q5: 2+ weeks & defined outcome? ── -->
+      <polygon points="480,458 630,490 480,522 330,490" fill="none" stroke="#f5a524" stroke-width="1.5"/>
+      <text x="480" y="484" text-anchor="middle" font-size="11" fill="#e8ecf5">Will it take 2+ weeks</text>
+      <text x="480" y="500" text-anchor="middle" font-size="11" fill="#e8ecf5">&amp; has defined outcome?</text>
+
+      <!-- NO left → Private Planner (just a task) -->
+      <line x1="330" y1="490" x2="185" y2="490" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="257" y="483" text-anchor="middle" font-size="10" fill="#f54f4f">NO</text>
+      <rect x="55" y="468" width="130" height="44" rx="6" fill="rgba(37,100,207,0.15)" stroke="rgba(37,100,207,0.4)" stroke-width="1"/>
+      <text x="120" y="485" text-anchor="middle" font-size="10.5" fill="#6699ff" font-weight="600">Private Planner</text>
+      <text x="120" y="500" text-anchor="middle" font-size="8.5" fill="#505870">not an initiative yet</text>
+
+      <!-- YES down -->
+      <line x1="480" y1="522" x2="480" y2="550" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="492" y="540" font-size="10" fill="#3dd68c">YES</text>
+
+      <!-- ── Q6: Needs coordination? ── -->
+      <polygon points="480,552 620,582 480,612 340,582" fill="none" stroke="#f5a524" stroke-width="1.5"/>
+      <text x="480" y="576" text-anchor="middle" font-size="11" fill="#e8ecf5">Needs coordination</text>
+      <text x="480" y="592" text-anchor="middle" font-size="11" fill="#e8ecf5">with others?</text>
+
+      <!-- NO left → Loop only -->
+      <line x1="340" y1="582" x2="185" y2="582" stroke="#f54f4f" stroke-width="1.5" marker-end="url(#arr-no)"/>
+      <text x="262" y="575" text-anchor="middle" font-size="10" fill="#f54f4f">NO</text>
+      <rect x="55" y="560" width="130" height="44" rx="6" fill="rgba(196,62,159,0.15)" stroke="rgba(196,62,159,0.4)" stroke-width="1"/>
+      <text x="120" y="577" text-anchor="middle" font-size="10.5" fill="#e066cc" font-weight="600">Loop page only</text>
+      <text x="120" y="592" text-anchor="middle" font-size="8.5" fill="#505870">personal initiative</text>
+
+      <!-- YES down → Lists + Loop -->
+      <line x1="480" y1="612" x2="480" y2="640" stroke="#3dd68c" stroke-width="1.5" marker-end="url(#arr-yes)"/>
+      <text x="492" y="630" font-size="10" fill="#3dd68c">YES</text>
+      <rect x="350" y="642" width="260" height="50" rx="6" fill="rgba(33,115,70,0.15)" stroke="rgba(33,115,70,0.4)" stroke-width="1"/>
+      <text x="480" y="661" text-anchor="middle" font-size="11" fill="#66cc99" font-weight="600">Lists + Loop page</text>
+      <text x="480" y="677" text-anchor="middle" font-size="9" fill="#505870">Add to registry · Create Loop page · Add Planner tasks when ready</text>
+
+      <!-- ── LEGEND ── -->
+      <rect x="10" y="750" width="940" height="58" rx="6" fill="rgba(79,124,255,0.06)" stroke="rgba(79,124,255,0.2)" stroke-width="1"/>
+      <text x="24" y="768" font-size="9" fill="#4f7cff" font-weight="600">QUICK REFERENCE</text>
+      <text x="24" y="784" font-size="9" fill="#8a94ad">Archive (no action)  →  Do it now (&lt;5 min)  →  Private Planner (not initiative-linked or too small)  →  Domain Planner (committed task for active initiative)</text>
+      <text x="24" y="800" font-size="9" fill="#8a94ad">→  Loop update (context/decision/status)  →  Lists + Loop (new initiative requiring coordination)</text>
+    </svg>
+  </div>
+
+  <div class="info-box" style="margin-top:16px;">
+    <strong>Reading the chart:</strong> Start at the top. Answer each diamond question. Follow the green YES or red NO path. Every signal finds a destination within 4–6 questions.
   </div>
 </div>
 
@@ -1874,9 +1839,9 @@ Please:
 <script>
   /* ─── GROUP / SUBTAB / SUBSUB NAVIGATION ─── */
   const groupDefaults = {
-    system:    { section: 'flow-map',   subsub: 'flow-map-subs' },
-    operations:{ section: 'initiatives', subsub: 'init-subs' },
-    toolkit:   { section: 'decisions',  subsub: 'dt-subs' }
+    system:    { section: 'flow-map',    subsub: 'flow-map-subs' },
+    operations:{ section: 'initiatives', subsub: 'wf-subs' },
+    toolkit:   { section: 'decisions',   subsub: 'dt-subs' }
   };
 
   function showGroup(group, btn) {
